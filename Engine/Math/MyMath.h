@@ -4,6 +4,9 @@
 #include<cassert>
 #include <vector>
 #include <string>
+#include <cmath>
+#define _USE_MATH_DEFINES
+#include <algorithm>
 struct Vector4 {
 	float x;
 	float y;
@@ -59,6 +62,44 @@ struct ModelData {
 	std::vector<VertexData> vertices;
 	MaterialData material;
 };
+struct AABB {
+	Vector3 min;
+	Vector3 max;
+};
+
+struct OBB {
+	Vector3 center;
+	Vector3 orientation[3];
+	Vector3 size;
+};
+struct StructSphere {
+	Vector3 center;
+	float radius;
+};
+inline Vector3 operator-(const Vector3& v) {
+	return { -v.x, -v.y, -v.z };
+}
+inline Vector3 operator+(const Vector3& v1, const Vector3& v2) {
+	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
+}
+
+inline Vector3 operator-(const Vector3& v1, const Vector3& v2) {
+	return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
+}
+
+inline Vector3 operator*(const Vector3& v, float s) {
+	return { v.x * s, v.y * s, v.z * s };
+}
+inline Vector3 operator*(float s, const Vector3& v) {
+	return { s * v.x, s * v.y, s * v.z };
+}
+
+inline Vector3 operator*(const Vector3& v, const Matrix4x4& m) {
+	return {
+		v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + m.m[3][0],
+		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + m.m[3][1],
+		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + m.m[3][2] };
+}
 Matrix4x4 MakeRotateXMatrix(float theta);
 Matrix4x4 MakeRotateYMatrix(float theta);
 
