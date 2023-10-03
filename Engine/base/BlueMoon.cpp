@@ -235,7 +235,7 @@ void BlueMoon::SettingBlendState() {
 	blendDesc_[kBlendModeMultiply].RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	blendDesc_[kBlendModeMultiply].RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 	//スクリーンブレンド
-	blendDesc_[kBlendModeMultiply].RenderTarget[0].RenderTargetWriteMask =
+	blendDesc_[kBlendModeScreen].RenderTarget[0].RenderTargetWriteMask =
 		D3D12_COLOR_WRITE_ENABLE_ALL;
 	blendDesc_[kBlendModeScreen].RenderTarget[0].BlendEnable = TRUE;
 	blendDesc_[kBlendModeScreen].RenderTarget[0].SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
