@@ -78,8 +78,6 @@ void GameScene::Update()
 
 	ImGui::Begin("Scene");
 	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
-	ImGui::DragFloat4("lightcolor", &directionalLight_.color.x, 0.1f);
-	ImGui::DragFloat("lightintensity", &directionalLight_.intensity, 0.1f);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
 		sceneNum = 1;
