@@ -77,7 +77,7 @@ void GameScene::Update()
 	viewProjection_.TransferMatrix();
 
 	ImGui::Begin("Scene");
-	ImGui::DragFloat3("translate", &worldTransformtriangle_[0].translation_.x, 0.1f);
+	ImGui::DragFloat4("translate", &spriteMaterial.x, 0.1f);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
 		sceneNum = 1;
