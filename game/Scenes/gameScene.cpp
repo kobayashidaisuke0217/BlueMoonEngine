@@ -36,7 +36,7 @@ void GameScene::Initialize()
 	sphere_ = new Sphere();
 	sphere_->Initialize();
 
-	model_[0] = Model::CreateModelFromObj("Resource", "axis.obj");
+	model_[0] = Model::CreateModelFromObj("Resource", "fence.obj");
 	model_[1] = new Model();
 	model_[1]->Initialize("Resource", "plane.obj");
 	for (int i = 0; i < 2; i++) {
@@ -47,12 +47,13 @@ void GameScene::Initialize()
 	for (int i = 0; i < 2; i++) {
 		worldTransformtriangle_[i].Initialize();
 	}
+	worldTransformModel_.Initialize();
 	sprite_ = new Sprite();
 	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_, directionalLight_);
 	triangleIsAlive_ = false;
 	spriteIsAlive_ = true;
-	sphereIsAlive_ = true;
-	modelIsAlive_ = false;
+	sphereIsAlive_ = false;
+	modelIsAlive_ = true;
 	GlovalVariables* globalVariables{};
 	globalVariables = GlovalVariables::GetInstance();
 	blendCount_ = 0;
@@ -72,11 +73,14 @@ void GameScene::Update()
 	
 	worldTransformtriangle_[0].UpdateMatrix();
 	worldTransformtriangle_[1].UpdateMatrix();
-
+	worldTransformModel_.UpdateMatrix();
 	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();
 
 	ImGui::Begin("Scene");
+	ImGui::DragFloat4("translate", &worldTransformModel_.translation_.x, 0.1f);
+	ImGui::DragFloat4("scale", &worldTransformModel_.scale_.x, 0.1f);
+	ImGui::DragFloat4("rotate", &worldTransformModel_.rotation_.x, 0.1f);
 	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
@@ -108,8 +112,8 @@ void GameScene::Draw3D()
 		}
 	}
 	if (modelIsAlive_ ) {
-		for (int i = 0; i < 2; i++) {
-			model_[0]->Draw(worldTransformtriangle_[i], viewProjection_, directionalLight_);
+		for (int i = 0; i < 1; i++) {
+			model_[0]->Draw(worldTransformModel_, viewProjection_, directionalLight_);
 		}
 
 	}
