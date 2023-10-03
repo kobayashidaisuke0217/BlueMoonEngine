@@ -7,7 +7,7 @@ void BlueMoon::Initialize(int32_t width, int32_t height) {
 	direct_->Initialize(win_, win_->kClientWidth, win_->kClientHeight);
 	
 
-
+	PSO2DCount_ = 0;
 	InitializeDxcCompiler();
 
 
@@ -23,8 +23,10 @@ void BlueMoon::Initialize(int32_t width, int32_t height) {
 	SettingDepth();
 	InitializePSO3D();
 	InitializePSO3DWireFrame();
-	InitializePSO2D();
+	for (int i = 0; i < 5; i++) {
 
+		InitializePSO2D();
+	}
 	SettingViePort();
 
 	SettingScissor();
@@ -192,15 +194,56 @@ void BlueMoon::CreateInputlayOut() {
 void BlueMoon::SettingBlendState() {
 
 	//すべての色要素を書き込む
-	blendDesc_.RenderTarget[0].RenderTargetWriteMask =
+	//ノーマルブレンド
+	blendDesc_[kBlendModeNormal].RenderTarget[0].RenderTargetWriteMask =
 		D3D12_COLOR_WRITE_ENABLE_ALL;
-	blendDesc_.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc_.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	blendDesc_.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	blendDesc_.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	blendDesc_.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-	blendDesc_.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	blendDesc_.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].BlendEnable = TRUE;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeNormal].RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	//加算ブレンド
+	blendDesc_[kBlendModeAdd].RenderTarget[0].RenderTargetWriteMask =
+		D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].BlendEnable = TRUE;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeAdd].RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	//減算ブレンド
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].RenderTargetWriteMask =
+		D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].BlendEnable = TRUE;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeSubtract].RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	//乗算ブレンド
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].RenderTargetWriteMask =
+		D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].BlendEnable = TRUE;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].SrcBlend = D3D12_BLEND_ZERO;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_COLOR;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	//スクリーンブレンド
+	blendDesc_[kBlendModeMultiply].RenderTarget[0].RenderTargetWriteMask =
+		D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].BlendEnable = TRUE;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc_[kBlendModeScreen].RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 }
 void BlueMoon::SettingRasterizerState3D() {
 
@@ -232,7 +275,7 @@ void BlueMoon::InitializePSO3D() {
 		vertexShaderBlob3D_->GetBufferSize() };//vertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob3D_->GetBufferPointer(),
 		pixelShaderBlob3D_->GetBufferSize() };//pixcelShader
-	graphicsPipelineStateDesc.BlendState = blendDesc_;//BlendState
+	graphicsPipelineStateDesc.BlendState = blendDesc_[kBlendModeNormal];//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc3D_;//rasterizerState
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
@@ -261,7 +304,7 @@ void BlueMoon::InitializePSO3DWireFrame()
 		vertexShaderBlob3D_->GetBufferSize() };//vertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob3D_->GetBufferPointer(),
 		pixelShaderBlob3D_->GetBufferSize() };//pixcelShader
-	graphicsPipelineStateDesc.BlendState = blendDesc_;//BlendState
+	graphicsPipelineStateDesc.BlendState = blendDesc_[kBlendModeNormal];//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc3DWireFrame_;//rasterizerState
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
@@ -382,7 +425,18 @@ void BlueMoon::ModelPreDrawWireFrame()
 void BlueMoon::SpritePreDraw()
 {
 	direct_->GetCommandList()->SetGraphicsRootSignature(rootSignature2D_.Get());
-	direct_->GetCommandList()->SetPipelineState(graphicsPipelineState2D_.Get());//PS0を設定
+	direct_->GetCommandList()->SetPipelineState(graphicsPipelineState2D_[kBlendModeNormal].Get());//PS0を設定
+}
+void BlueMoon::SetBlendMode(int BlendModeNum)
+{
+	if (BlendModeNum > 4) {
+		BlendModeNum = 4;
+	}
+	if (BlendModeNum < 0) {
+		BlendModeNum = 0;
+	}
+	direct_->GetCommandList()->SetGraphicsRootSignature(rootSignature2D_.Get());
+	direct_->GetCommandList()->SetPipelineState(graphicsPipelineState2D_[BlendModeNum].Get());//PS0を設定
 }
 #pragma region 2D用のパイプライン
 void BlueMoon::InitializePSO2D() {
@@ -394,7 +448,7 @@ void BlueMoon::InitializePSO2D() {
 		vertexShaderBlob2D_->GetBufferSize() };//vertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob2D_->GetBufferPointer(),
 		pixelShaderBlob2D_->GetBufferSize() };//pixcelShader
-	graphicsPipelineStateDesc.BlendState = blendDesc_;//BlendState
+	graphicsPipelineStateDesc.BlendState = blendDesc_[PSO2DCount_];//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc2D_;//rasterizerState
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
@@ -408,10 +462,12 @@ void BlueMoon::InitializePSO2D() {
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
-	graphicsPipelineState2D_ = nullptr;
+	graphicsPipelineState2D_[PSO2DCount_] = nullptr;
 	HRESULT hr = direct_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
-		IID_PPV_ARGS(&graphicsPipelineState2D_));
+		IID_PPV_ARGS(&graphicsPipelineState2D_[PSO2DCount_]));
 	assert(SUCCEEDED(hr));
+	PSO2DCount_++;
+
 }
 void BlueMoon::SettingRasterizerState2D() {
 

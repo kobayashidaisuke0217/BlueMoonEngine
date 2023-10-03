@@ -9,6 +9,18 @@
 #include<vector>
 #pragma comment(lib,"dxcompiler.lib")
 #pragma endregion
+enum BlendMode {
+	//通常のαブレンド
+	kBlendModeNormal,
+	//加算ブレンド
+	kBlendModeAdd,
+	//減産ブレンド
+	kBlendModeSubtract,
+	//乗算ブレンド
+	kBlendModeMultiply,
+	//スクリーンブレンド
+	kBlendModeScreen,
+};
 class BlueMoon
 {
 public:
@@ -30,7 +42,7 @@ public:
 	void ModelPreDraw();
 	void ModelPreDrawWireFrame();
 	void SpritePreDraw();
-
+	void SetBlendMode(int BlendModeNum);
 private:
 
 
@@ -47,7 +59,7 @@ private:
 	IDxcIncludeHandler* includeHandler_;
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
-	D3D12_BLEND_DESC blendDesc_{};
+	D3D12_BLEND_DESC blendDesc_[5]{};
 	//3Dパイプライン
 	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlob3D_;
 	Microsoft::WRL::ComPtr<ID3DBlob>errorBlob3D_;
@@ -63,7 +75,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignature2D_;
 	IDxcBlob* vertexShaderBlob2D_;
 	IDxcBlob* pixelShaderBlob2D_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState2D_;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState2D_[5];
 D3D12_RASTERIZER_DESC rasterizerDesc2D_{};
 D3D12_INPUT_ELEMENT_DESC inputElementDescs2D_[2];
 D3D12_INPUT_LAYOUT_DESC inputLayoutDesc2D_{};
@@ -74,7 +86,7 @@ D3D12_RASTERIZER_DESC rasterizerDesc3DWireFrame_{};
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs_[3];
 	//頂点リソースにデータを書き込む
 	Vector4* vertexData_;
-
+	int PSO2DCount_;
 
 
 	IDxcBlob* CompileShader(
