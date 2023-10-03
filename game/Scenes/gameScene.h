@@ -43,6 +43,7 @@ private:
 	Vector4 modelMaterial_[2];
 	uint32_t uvResourceNum;
 	WorldTransform worldTransformtriangle_[2];
+	WorldTransform worldTransformModel_;
 	ViewProjection viewProjection_;
 	int monsterBallResourceNum;
 	int BlackResourceNum;
