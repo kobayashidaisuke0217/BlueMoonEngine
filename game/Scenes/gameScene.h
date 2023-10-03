@@ -50,7 +50,7 @@ private:
 	bool spriteIsAlive_;
 	bool sphereIsAlive_;
 	bool modelIsAlive_;
-
+	int blendCount_;
 	void Draw2D();
 	void Draw3D();
 	void ApplyGlobalVariables();

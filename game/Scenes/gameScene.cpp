@@ -55,7 +55,7 @@ void GameScene::Initialize()
 	modelIsAlive_ = false;
 	GlovalVariables* globalVariables{};
 	globalVariables = GlovalVariables::GetInstance();
-
+	blendCount_ = 0;
 	const char* groupName = "Player";
 	GlovalVariables::GetInstance()->CreateGroup(groupName);
 	globalVariables->AddItem(groupName, "Test", 90.0f);
@@ -78,6 +78,7 @@ void GameScene::Update()
 
 	ImGui::Begin("Scene");
 	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
+	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
 		sceneNum = 1;
@@ -131,7 +132,7 @@ void GameScene::ApplyGlobalVariables()
 }
 
 void GameScene::Draw2D() {
-
+	blueMoon_->SetBlendMode(blendCount_);
 	if (spriteIsAlive_ ) {
 		sprite_->Draw(spriteTransform_, SpriteuvTransform, spriteMaterial, 0);
 	
