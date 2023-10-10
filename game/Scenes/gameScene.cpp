@@ -113,15 +113,13 @@ void GameScene::Draw()
 
 void GameScene::Draw3D()
 {
-	
+	blueMoon_->ModelPreDraw();
 	
 	
 	blueMoon_->PariclePreDraw();
-	particle_->Draw(particleTransform_, particleuvTransform, { 1.0f,1.0f,1.0f,1.0f }, 0);
+	
 	blueMoon_->ModelPreDrawWireFrame();
-	if (sphereIsAlive_) {
-		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
-	}
+	
 	
 }
 
