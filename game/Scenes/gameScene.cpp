@@ -15,62 +15,7 @@ void GameScene::Initialize()
 	textureManager_ = Texturemanager::GetInstance();
 
 	viewProjection_.Initialize();
-	viewProjection_.translation_ = { 0.0f,0.0f,-5.0f };
-	uvResourceNum = textureManager_->Load("Resource/uvChecker.png");
-	monsterBallResourceNum = textureManager_->Load("Resource/monsterBall.png");
-	BlackResourceNum = textureManager_->Load("Resource/Black.png");
-	material[0] = { 1.0f,1.0f,1.0f,1.0f };
-	material[1] = { 1.0f,1.0f,1.0f,1.0f };
-	spritedataLeftTop_ = { 0.0f,0.0f,0.0f,1.0f };
-	spritedataRightDown_ = { 320.0f,180.0f,0.0f,1.0f };
-	spriteTransform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	spriteMaterial = { 1.0f,1.0f,1.0f,1.0f };
-	sphereMaterial_ = { 1.0f,1.0f,1.0f,1.0f };
-	SpriteuvTransform =
-	{
-		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,0.0f},
-	};
 	
-	sphere_ = new Sphere();
-	sphere_->Initialize();
-
-	model_[0] = Model::CreateModelFromObj("Resource", "fence.obj");
-	model_[1] = new Model();
-	model_[1]->Initialize("Resource", "plane.obj");
-	for (int i = 0; i < 2; i++) {
-		modelMaterial_[i] = { 1.0f,1.0f,1.0f,1.0f };
-	}
-	triangle_ = new Triangle();
-	triangle_->Initialize();
-	for (int i = 0; i < 2; i++) {
-		worldTransformtriangle_[i].Initialize();
-	}
-	worldTransformModel_.Initialize();
-	sprite_ = new Sprite();
-	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
-	particle_ = new Particle();
-	particle_->Initialize({ 600.0f,200.0f,0.0f,0.0f }, { 900.0f,600.0f,0.0f,0.0f });
-	triangleIsAlive_ = false;
-	spriteIsAlive_ = true;
-	sphereIsAlive_ = false;
-	modelIsAlive_ = true;
-	particleTransform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	particleuvTransform =
-	{
-		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,0.0f},
-	};
-	GlovalVariables* globalVariables{};
-	globalVariables = GlovalVariables::GetInstance();
-	blendCount_ = 0;
-	const char* groupName = "Player";
-	GlovalVariables::GetInstance()->CreateGroup(groupName);
-	globalVariables->AddItem(groupName, "Test", 90.0f);
-	globalVariables->AddItem(groupName, "Translation", worldTransformtriangle_[0].translation_);
-	ApplyGlobalVariables();
 	
 }
 
@@ -78,19 +23,11 @@ void GameScene::Update()
 {
 	
 	
-	
-	
-	worldTransformtriangle_[0].UpdateMatrix();
-	worldTransformtriangle_[1].UpdateMatrix();
-	worldTransformModel_.UpdateMatrix();
 	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();
 
 	ImGui::Begin("Scene");
-	ImGui::DragFloat4("translate", &worldTransformModel_.translation_.x, 0.1f);
-	ImGui::DragFloat4("scale", &worldTransformModel_.scale_.x, 0.1f);
-	ImGui::DragFloat4("rotate", &worldTransformModel_.rotation_.x, 0.1f);
-	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
+	
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
@@ -133,22 +70,11 @@ void GameScene::ApplyGlobalVariables()
 
 void GameScene::Draw2D() {
 	blueMoon_->SetBlendMode(blendCount_);
-	if (spriteIsAlive_ ) {
-		sprite_->Draw(spriteTransform_, SpriteuvTransform, spriteMaterial, 0);
 	
-	}
 
 }
 void GameScene::Finalize()
 {
-	delete particle_;
-	delete sphere_;
-	delete  sprite_;
-	delete triangle_;
-	for (int i = 0; i < 2; i++) {
-		delete model_[i];
-
-	}
 	
 }
 
