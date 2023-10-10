@@ -2,9 +2,9 @@
 #include"ImGuiManger.h"
 SceneManager::SceneManager()
 {
-	
-	
-	
+
+
+
 }
 SceneManager::~SceneManager()
 {
@@ -21,46 +21,46 @@ void SceneManager::Run() {
 			break;
 		}
 		imguiManager_->Begin();
-        input->Update();
+		input->Update();
 		glovalVariables_->Update();
-		
+		directionallight_->Update();
 		blueMoon_->BeginFrame();
-		
+
 		preSceneNum_ = sceneNum_;
 		sceneNum_ = sceneArr_[sceneNum_]->GetSceneNum();
 
 		if (sceneNum_ != preSceneNum_) {
 			sceneArr_[preSceneNum_]->Finalize();
 			sceneArr_[sceneNum_]->Initialize();
-			
+
 		}
 		sceneArr_[sceneNum_]->Update();
 		if (input->PushKey(DIK_1)) {
 			audio_->SoundPlayWave(audio_->xAudio2.Get(), audio_->soundDatas[0]);
 		}
-		
-		sceneArr_[sceneNum_]->Draw();
-		
 
-		
+		sceneArr_[sceneNum_]->Draw();
+
+
+
 		imguiManager_->End();
-	
+
 		imguiManager_->Draw();
 		blueMoon_->EndFrame();
 	}
 	CoUninitialize();
 	blueMoon_->Finalize();
 	sceneArr_[sceneNum_]->Finalize();
-	
+
 }
 
 void SceneManager::Initialize()
 {
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 	blueMoon_ = BlueMoon::GetInstance();
-	blueMoon_->Initialize( 1280, 720);
+	blueMoon_->Initialize(1280, 720);
 	winApp_ = WinApp::GetInstance();
-    input=Input::GetInstance();
+	input = Input::GetInstance();
 	input->Initialize(winApp_);
 	textureManager_ = Texturemanager::GetInstance();
 	textureManager_->Initialize();
@@ -68,11 +68,13 @@ void SceneManager::Initialize()
 	imguiManager_->Initialize(winApp_, blueMoon_->GetDirectXCommon());
 	glovalVariables_ = GlovalVariables::GetInstance();
 	glovalVariables_->LoadFiles();
+	directionallight_ = DirectionalLight::GetInstance();
+	directionallight_->Initialize();
 	sceneArr_[TITLE_SCENE] = std::make_unique <TitleScene>();
 	sceneArr_[GAME_SCENE] = std::make_unique <GameScene>();
 	sceneNum_ = TITLE_SCENE;
 	sceneArr_[sceneNum_]->Initialize();
-	
+
 	audio_ = Audio::GetInstance();
 	audio_->Initialize();
 	audio_->soundDatas[0] = audio_->SoundLoadWave("resource/Alarm01.wav");

@@ -32,7 +32,7 @@ void GameScene::Initialize()
 		{0.0f,0.0f,0.0f},
 		{0.0f,0.0f,0.0f},
 	};
-	directionalLight_ = { {1.0f,1.0f,1.0f,1.0f},{0.0f,-1.0f,0.0f},1.0f };
+	
 	sphere_ = new Sphere();
 	sphere_->Initialize();
 
@@ -43,13 +43,13 @@ void GameScene::Initialize()
 		modelMaterial_[i] = { 1.0f,1.0f,1.0f,1.0f };
 	}
 	triangle_ = new Triangle();
-	triangle_->Initialize(directionalLight_);
+	triangle_->Initialize();
 	for (int i = 0; i < 2; i++) {
 		worldTransformtriangle_[i].Initialize();
 	}
 	worldTransformModel_.Initialize();
 	sprite_ = new Sprite();
-	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_, directionalLight_);
+	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
 	triangleIsAlive_ = false;
 	spriteIsAlive_ = true;
 	sphereIsAlive_ = false;
@@ -68,7 +68,7 @@ void GameScene::Initialize()
 void GameScene::Update()
 {
 	
-	directionalLight_.direction = Normalise(directionalLight_.direction);
+	
 	
 	
 	worldTransformtriangle_[0].UpdateMatrix();
@@ -113,16 +113,16 @@ void GameScene::Draw3D()
 	}
 	if (modelIsAlive_ ) {
 		for (int i = 0; i < 1; i++) {
-			model_[0]->Draw(worldTransformModel_, viewProjection_, directionalLight_);
+			model_[0]->Draw(worldTransformModel_, viewProjection_);
 		}
 
 	}
 	if (sphereIsAlive_) {
-		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_, directionalLight_);
+		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
 	}
 	blueMoon_->ModelPreDrawWireFrame();
 	if (sphereIsAlive_) {
-		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_, directionalLight_);
+		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
 	}
 	
 }
