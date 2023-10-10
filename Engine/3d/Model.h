@@ -8,17 +8,19 @@
 #include "worldTransform.h"
 #include "ViewProjection.h"
 #include "Texturemanager.h"
+#include"DirectionalLight.h"
 class Model
 {
 public:
-	void Initialize( const std::string& directoryPath, const std::string& filename);
-	void Draw(const WorldTransform& transform, const ViewProjection& viewProjection, const DirectionalLight& light);
+	void Initialize(const std::string& directoryPath, const std::string& filename);
+	void Draw(const WorldTransform& transform, const ViewProjection& viewProjection);
 	void Finalize();
 
 	static Model* CreateModelFromObj(const std::string& directoryPath, const std::string& filename);
 	ModelData modelData_;
 	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
-	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath,const std::string&filename);
+	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+	void SetColor(Vector4 col) { color = col; }
 private:
 	Texturemanager* textureManager_;
 	DirectXCommon* dxCommon_;
@@ -32,16 +34,16 @@ private:
 	Material* material_;
 	BlueMoon* engine_;
 	uint32_t texture_;
-	
+	Vector4 color = { 1.0f,1.0f,1.0f,1.0f };
 	DirectionalLight* directionalLight_;
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
-	
-	
+
+
+
 private:
 	void CreateVartexData();
 	void SetColor();
 	void TransformMatrix();
-	void CreateDictionalLight();
+
 
 };
 
