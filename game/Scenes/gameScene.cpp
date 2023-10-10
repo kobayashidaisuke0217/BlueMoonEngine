@@ -143,7 +143,7 @@ void GameScene::Draw2D() {
 }
 void GameScene::Finalize()
 {
-	
+	delete particle_;
 	delete sphere_;
 	delete  sprite_;
 	delete triangle_;
