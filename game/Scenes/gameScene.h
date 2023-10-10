@@ -10,6 +10,7 @@
 #include "ViewProjection.h"
 #include "Texturemanager.h"
 #include "GlobalVariables.h"
+#include "Particle.h"
 class GameScene:public Iscene
 {
 public:
@@ -37,13 +38,15 @@ private:
 	Sphere* sphere_;
 	Vector4 sphereMaterial_;
 	Matrix4x4 spherematrix_;
-	
+	Particle* particle_;
 	Model* model_[2];
 	Vector4 modelMaterial_[2];
 	uint32_t uvResourceNum;
 	WorldTransform worldTransformtriangle_[2];
 	WorldTransform worldTransformModel_;
 	ViewProjection viewProjection_;
+	Transform particleTransform_;
+	Transform particleuvTransform;
 	int monsterBallResourceNum;
 	int BlackResourceNum;
 	bool triangleIsAlive_;
