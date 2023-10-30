@@ -65,7 +65,7 @@ void GameScene::ApplyGlobalVariables()
 	GlovalVariables* globalVariables = GlovalVariables::GetInstance();
 
 	const char* groupName = "Player";
-	worldTransformtriangle_[0].translation_ = globalVariables->GetVector3Value(groupName, "Translation");
+
 }
 
 void GameScene::Draw2D() {
