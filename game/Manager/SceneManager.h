@@ -6,7 +6,6 @@
 #include "Audio.h"
 #include "GlobalVariables.h"
 #include "ImGuiManger.h"
-#include"DirectionalLight.h"
 #pragma endregion
 #pragma region シーン
 #include <game/Scenes/Iscene.h>
@@ -25,17 +24,16 @@ public:
 	void Finalize();*/
 #pragma endregion 
 	void Run();
-
+	
 private:
 	BlueMoon* blueMoon_;
 	WinApp* winApp_ = nullptr;
-	Input* input;
+	Input* input ;
 	Texturemanager* textureManager_;
 	Audio* audio_;
 	std::unique_ptr<Iscene> sceneArr_[2];
 	GlovalVariables* glovalVariables_;
 	ImGuiManger* imguiManager_;
-	DirectionalLight* directionallight_;
 	int sceneNum_;
 	int preSceneNum_;
 
