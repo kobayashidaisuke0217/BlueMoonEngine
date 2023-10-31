@@ -39,6 +39,7 @@ private:
 	Vector4 sphereMaterial_;
 	Matrix4x4 spherematrix_;
 	Particle* particle_;
+	Particle* particle2_;
 	Model* model_[2];
 	Vector4 modelMaterial_[2];
 	uint32_t uvResourceNum;
