@@ -36,7 +36,7 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeRotateZMatrix(uvTransform.rotate.z));
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeTranslateMatrix(uvTransform.translate));
 
-
+	
 
 	*materialData_ = { material,false };
 	materialData_->uvTransform = uvtransformMtrix;

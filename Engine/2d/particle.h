@@ -31,6 +31,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_;
 	Transformmatrix* wvpData_;
 	DirectionalLight* directionalLight_;
-
+	uint32_t kNumInstance_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
+	Matrix4x4* instancingData;
 };
 

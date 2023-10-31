@@ -2,7 +2,7 @@
 
 
 
-StructuredBuffer<TransformationMatrix> gTransformationMatrices : register(b0);
+StructuredBuffer<TransformationMatrix> gTransformationMatrices : register(t0);
 ConstantBuffer<ViewProjectionMatrix> gViewProjectionMatrix : register(b1);
 VertexShaderOutput main(VertexShaderInput input,uint32_t instanceId :SV_InstanceID ) {
 	VertexShaderOutput output;
