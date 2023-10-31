@@ -11,15 +11,35 @@ void Particle::Initialize()
 	directionalLight_ = DirectionalLight::GetInstance();
 	SettingVertex();
 	SetColor();
-
+	TransformMatrix();
 }
 void Particle::TransformMatrix()
 {
-	wvpResource_ = DirectXCommon::CreateBufferResource(direct_->GetDevice().Get(), sizeof(Transformmatrix));
-
-	wvpResource_->Map(0, NULL, reinterpret_cast<void**>(&wvpData_));
-	wvpData_->WVP = MakeIdentity4x4();
-
+	 
+	instancingResource_ = direct_->CreateBufferResource(direct_->GetDevice().Get(), sizeof(Matrix4x4) * kNumInstance_);
+	instancingResource_->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
+	CreateSRV(1);
+	for (uint32_t index = 0; index < kNumInstance_; ++index) {
+		instancingData[index] = MakeIdentity4x4();
+		transforms[index].scale = { 1.0f,1.0f,1.0f };
+		transforms[index].rotate = { 0.0f,0.0f,0.0f };
+		transforms[index].translate = { index * 0.1f,index * 0.1f,index * 0.1f };
+		
+	}
+}
+void Particle::CreateSRV(uint32_t num)
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;//2Dテクスチャ
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	srvDesc.Buffer.NumElements = kNumInstance_;
+	srvDesc.Buffer.StructureByteStride = sizeof(Matrix4x4);
+	srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	srvHandleGPU_ = textureManager_->GettextureSrvHandleGPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHandleCPU_);
 }
 void Particle::SetColor() {
 	materialResource_ = DirectXCommon::CreateBufferResource(direct_->GetDevice().Get(), sizeof(Material));
@@ -35,9 +55,10 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 	Matrix4x4 uvtransformMtrix = MakeScaleMatrix(uvTransform.scale);
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeRotateZMatrix(uvTransform.rotate.z));
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeTranslateMatrix(uvTransform.translate));
-
-	
-
+	for (uint32_t i = 0; i < kNumInstance_; ++i) {
+		instancingData[i] = MakeAffineMatrix(transforms[i].scale, transforms[i].rotate, transforms[i].translate);
+		instancingData[i] = Multiply(instancingData[i], transform.matWorld_);
+	}
 	*materialData_ = { material,false };
 	materialData_->uvTransform = uvtransformMtrix;
 
@@ -47,7 +68,7 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 	//material
 	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//worldTransform
-	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transform.constBuff_->GetGPUVirtualAddress());
+	direct_->GetCommandList()->SetGraphicsRootDescriptorTable(1,srvHandleGPU_);
 
 	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(4, viewProjection.constBuff_->GetGPUVirtualAddress());
 	//Light
@@ -58,7 +79,7 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 
 
 	//描画！(DrawCall/ドローコール)・3頂点で1つのインスタンス。インスタンスについては今後
-	direct_->GetCommandList()->DrawInstanced(6, 1, 0, 0);
+	direct_->GetCommandList()->DrawInstanced(6, kNumInstance_, 0, 0);
 
 }
 void Particle::Finalize()

@@ -17,7 +17,7 @@ private:
 	void SettingVertex();
 	void SetColor();
 	void TransformMatrix();
-
+	void CreateSRV(uint32_t num);
 private:
 	Texturemanager* textureManager_;
 
@@ -31,8 +31,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_;
 	Transformmatrix* wvpData_;
 	DirectionalLight* directionalLight_;
-	uint32_t kNumInstance_;
+ static	const uint32_t kNumInstance_=10;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	Matrix4x4* instancingData;
+	Transform transforms[kNumInstance_];
+	D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU_;
+	D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU_;
 };
 
