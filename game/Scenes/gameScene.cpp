@@ -52,8 +52,6 @@ void GameScene::Initialize()
 	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
 	particle_ = new Particle();
 	particle_->Initialize();
-	/*particle2_ = new Particle();
-	particle2_->Initialize();*/
 	triangleIsAlive_ = false;
 	spriteIsAlive_ = true;
 	sphereIsAlive_ = false;
