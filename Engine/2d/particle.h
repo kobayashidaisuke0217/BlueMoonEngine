@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 #include "Worldtransform.h"
 #include "ViewProjection.h"
+#include "SrvDescriptorheap.h"
 class Particle
 {
 public:
@@ -20,7 +21,7 @@ private:
 	void CreateSRV(uint32_t num);
 private:
 	Texturemanager* textureManager_;
-
+	SrvDescriptorHeap* srvHeap_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	DirectXCommon* direct_;
 	VertexData* vertexData_;
@@ -31,7 +32,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_;
 	Transformmatrix* wvpData_;
 	DirectionalLight* directionalLight_;
- static	const uint32_t kNumInstance_=10;
+	static	const uint32_t kNumInstance_ = 10;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	Matrix4x4* instancingData;
 	Transform transforms[kNumInstance_];

@@ -7,7 +7,7 @@ void Particle::Initialize()
 	direct_ = DirectXCommon::GetInstance();
 
 	textureManager_ = Texturemanager::GetInstance();
-
+	srvHeap_ = SrvDescriptorHeap::GetInstance();
 	directionalLight_ = DirectionalLight::GetInstance();
 	SettingVertex();
 	SetColor();
@@ -15,7 +15,7 @@ void Particle::Initialize()
 }
 void Particle::TransformMatrix()
 {
-	 
+
 	instancingResource_ = direct_->CreateBufferResource(direct_->GetDevice().Get(), sizeof(Matrix4x4) * kNumInstance_);
 	instancingResource_->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 	CreateSRV(1);
@@ -24,7 +24,7 @@ void Particle::TransformMatrix()
 		transforms[index].scale = { 1.0f,1.0f,1.0f };
 		transforms[index].rotate = { 0.0f,0.0f,0.0f };
 		transforms[index].translate = { index * 0.1f,index * 0.1f,index * 0.1f };
-		
+
 	}
 }
 void Particle::CreateSRV(uint32_t num)
@@ -37,9 +37,11 @@ void Particle::CreateSRV(uint32_t num)
 	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	srvDesc.Buffer.NumElements = kNumInstance_;
 	srvDesc.Buffer.StructureByteStride = sizeof(Matrix4x4);
-	srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
-	srvHandleGPU_ = textureManager_->GettextureSrvHandleGPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
-	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHandleCPU_);
+	srvHeap_->AddIndex();
+	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//direct_->GetSrvHeap()->GetGPUDescriptorHandleForHeapStart();
+	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	//srvHandleGPU_ = textureManager_->GettextureSrvHandleGPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHeap_->GetCPUHandle(srvHeap_->GetIndex()));
 }
 void Particle::SetColor() {
 	materialResource_ = DirectXCommon::CreateBufferResource(direct_->GetDevice().Get(), sizeof(Material));
@@ -68,7 +70,7 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 	//material
 	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//worldTransform
-	direct_->GetCommandList()->SetGraphicsRootDescriptorTable(1,srvHandleGPU_);
+	direct_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvHandleGPU_);
 
 	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(4, viewProjection.constBuff_->GetGPUVirtualAddress());
 	//Light
