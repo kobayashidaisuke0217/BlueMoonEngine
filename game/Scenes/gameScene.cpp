@@ -52,6 +52,8 @@ void GameScene::Initialize()
 	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
 	particle_ = new Particle();
 	particle_->Initialize();
+	particle2_ = new Particle();
+	particle2_->Initialize();
 	triangleIsAlive_ = false;
 	spriteIsAlive_ = true;
 	sphereIsAlive_ = false;
@@ -118,7 +120,8 @@ void GameScene::Draw3D()
 	
 	blueMoon_->PariclePreDraw();
 	particle_->Draw(worldTransformtriangle_[0], viewProjection_, {1.0f,1.0f,1.0f,1.0f}, monsterBallResourceNum);
-	
+	particle2_->Draw(worldTransformtriangle_[1], viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, monsterBallResourceNum);
+
 	blueMoon_->ModelPreDrawWireFrame();
 	if (sphereIsAlive_) {
 		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);

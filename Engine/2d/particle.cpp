@@ -39,8 +39,9 @@ void Particle::CreateSRV(uint32_t num)
 	srvDesc.Buffer.StructureByteStride = sizeof(Matrix4x4);
 	srvHeap_->AddIndex();
 	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//direct_->GetSrvHeap()->GetGPUDescriptorHandleForHeapStart();
-	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	srvHeap_->SetCPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
 	//srvHandleGPU_ = textureManager_->GettextureSrvHandleGPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	index_ = srvHeap_->GetIndex();
 	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHeap_->GetCPUHandle(srvHeap_->GetIndex()));
 }
 void Particle::SetColor() {
@@ -70,7 +71,7 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 	//material
 	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	//worldTransform
-	direct_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvHandleGPU_);
+	direct_->GetCommandList()->SetGraphicsRootDescriptorTable(1, srvHeap_->GetGPUHandle(index_));
 
 	direct_->GetCommandList()->SetGraphicsRootConstantBufferView(4, viewProjection.constBuff_->GetGPUVirtualAddress());
 	//Light
