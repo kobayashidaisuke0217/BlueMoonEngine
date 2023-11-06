@@ -27,6 +27,7 @@ private:
 	Sprite* sprite_;
 	Texturemanager* textureManager_;
 
+
 	Vector4 spritedataLeftTop_;
 	Vector4 spritedataRightDown_;
 	Transform spriteTransform_;
@@ -54,7 +55,9 @@ private:
 	bool spriteIsAlive_;
 	bool sphereIsAlive_;
 	bool modelIsAlive_;
+
 	int blendCount_;
+	ViewProjection viewProjection_;
 	void Draw2D();
 	void Draw3D();
 	void ApplyGlobalVariables();

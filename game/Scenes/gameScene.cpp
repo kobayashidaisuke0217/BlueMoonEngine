@@ -15,24 +15,8 @@ void GameScene::Initialize()
 	textureManager_ = Texturemanager::GetInstance();
 
 	viewProjection_.Initialize();
-	viewProjection_.translation_ = { 0.0f,0.0f,-5.0f };
-	uvResourceNum = textureManager_->Load("Resource/uvChecker.png");
-	monsterBallResourceNum = textureManager_->Load("Resource/monsterBall.png");
-	BlackResourceNum = textureManager_->Load("Resource/Black.png");
-	material[0] = { 1.0f,1.0f,1.0f,1.0f };
-	material[1] = { 1.0f,1.0f,1.0f,1.0f };
-	spritedataLeftTop_ = { 0.0f,0.0f,0.0f,1.0f };
-	spritedataRightDown_ = { 320.0f,180.0f,0.0f,1.0f };
-	spriteTransform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	spriteMaterial = { 1.0f,1.0f,1.0f,1.0f };
-	sphereMaterial_ = { 1.0f,1.0f,1.0f,1.0f };
-	SpriteuvTransform =
-	{
-		{1.0f,1.0f,1.0f},
-		{0.0f,0.0f,0.0f},
-		{0.0f,0.0f,0.0f},
-	};
 	
+
 	sphere_ = new Sphere();
 	sphere_->Initialize();
 
@@ -73,14 +57,12 @@ void GameScene::Initialize()
 	globalVariables->AddItem(groupName, "Test", 90.0f);
 	globalVariables->AddItem(groupName, "Translation", worldTransformtriangle_[0].translation_);
 	ApplyGlobalVariables();
+
 	
 }
 
 void GameScene::Update()
 {
-	
-	
-	
 	
 	worldTransformtriangle_[0].UpdateMatrix();
 	worldTransformtriangle_[1].UpdateMatrix();
@@ -89,10 +71,12 @@ void GameScene::Update()
 	viewProjection_.TransferMatrix();
 
 	ImGui::Begin("Scene");
+
 	ImGui::DragFloat3("translate", &worldTransformtriangle_[0].translation_.x, 0.1f);
 	ImGui::DragFloat3("scale", &worldTransformtriangle_[0].scale_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &worldTransformtriangle_[0].rotation_.x, 0.1f);
 	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
+
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
@@ -115,17 +99,17 @@ void GameScene::Draw()
 
 void GameScene::Draw3D()
 {
-	
+	blueMoon_->ModelPreDraw();
 	
 	
 	blueMoon_->PariclePreDraw();
+
 	particle_->Draw(worldTransformtriangle_[0], viewProjection_, {1.0f,1.0f,1.0f,1.0f}, monsterBallResourceNum);
 	particle2_->Draw(worldTransformtriangle_[1], viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, monsterBallResourceNum);
 
+
 	blueMoon_->ModelPreDrawWireFrame();
-	if (sphereIsAlive_) {
-		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
-	}
+	
 	
 }
 
@@ -134,27 +118,19 @@ void GameScene::ApplyGlobalVariables()
 	GlovalVariables* globalVariables = GlovalVariables::GetInstance();
 
 	const char* groupName = "Player";
-	//worldTransformtriangle_[0].translation_ = globalVariables->GetVector3Value(groupName, "Translation");
+
 }
 
 void GameScene::Draw2D() {
 	blueMoon_->SetBlendMode(blendCount_);
+
 	if (spriteIsAlive_ ) {
 		sprite_->Draw(spriteTransform_, SpriteuvTransform, spriteMaterial, monsterBallResourceNum);
-	
-	}
+
 
 }
 void GameScene::Finalize()
 {
-	delete particle_;
-	delete sphere_;
-	delete  sprite_;
-	delete triangle_;
-	for (int i = 0; i < 2; i++) {
-		delete model_[i];
-
-	}
 	
 }
 
