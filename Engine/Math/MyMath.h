@@ -58,6 +58,10 @@ struct DirectionalLightData {
 struct MaterialData {
 	std::string textureFilePath;
 };
+struct ParticleData {
+	Transform transform;
+	Vector3 velocity;
+};
 struct ModelData {
 	std::vector<VertexData> vertices;
 	MaterialData material;

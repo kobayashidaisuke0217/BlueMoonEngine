@@ -576,17 +576,28 @@ void BlueMoon::CreateRootSignatureParticle()
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	//RootParameter作成。複数設定できるので配列。今回は結果1つだけなので長さ１の配列
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	//RootParameter作成。複数設定できるので配列。
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//pixelShaderを使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	//worldtransform
+	D3D12_DESCRIPTOR_RANGE descriptoraRangeParticle[1] = {};
+	descriptoraRangeParticle[0].BaseShaderRegister = 0;
+	descriptoraRangeParticle[0].NumDescriptors = 1;
+	descriptoraRangeParticle[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使用
+	descriptoraRangeParticle[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//vertexShaderを使う
-	rootParameters[1].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
+	rootParameters[1].DescriptorTable.pDescriptorRanges=descriptoraRangeParticle;//レジスタ番号0とバインド
+	rootParameters[1].DescriptorTable.NumDescriptorRanges = _countof(descriptoraRangeParticle);
+	//viewProjection
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;//vertexShaderで使う
+	rootParameters[4].Descriptor.ShaderRegister = 1;//レジスタ番号を1にバインド
 
 	D3D12_DESCRIPTOR_RANGE descriptoraRange[1] = {};
-	descriptoraRange[0].BaseShaderRegister = 0;
+	descriptoraRange[0].BaseShaderRegister = 1;
 	descriptoraRange[0].NumDescriptors = 1;
 	descriptoraRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使用
 	descriptoraRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
@@ -617,8 +628,7 @@ void BlueMoon::CreateRootSignatureParticle()
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 	//シリアライズしてバイナリにする
-	signatureBlobParticle_ = nullptr;
-	errorBlobParticle_ = nullptr;
+	
 	HRESULT hr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature,
 		D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlobParticle_, &errorBlobParticle_);
@@ -627,7 +637,7 @@ void BlueMoon::CreateRootSignatureParticle()
 		assert(false);
 	}
 	//バイナリを元に生成
-	rootSignatureParticle_ = nullptr;
+
 	hr = direct_->GetDevice()->CreateRootSignature(0, signatureBlobParticle_->GetBufferPointer(),
 		signatureBlobParticle_->GetBufferSize(), IID_PPV_ARGS(&rootSignatureParticle_));
 	assert(SUCCEEDED(hr));

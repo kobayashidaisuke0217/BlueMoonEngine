@@ -108,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\base\BlueMoon.cpp" />
     <ClCompile Include="Engine\base\DirectXCommon.cpp" />
     <ClCompile Include="Engine\base\ImGuiManger.cpp" />
+    <ClCompile Include="Engine\base\SrvDescriptorHeap.cpp" />
     <ClCompile Include="Engine\base\WinApp.cpp" />
     <ClCompile Include="Engine\Manager\Audio\Audio.cpp" />
     <ClCompile Include="Engine\Manager\Collision\CollisionManager.cpp" />
@@ -163,6 +164,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\BlueMoon.h" />
     <ClInclude Include="Engine\base\DirectXCommon.h" />
     <ClInclude Include="Engine\base\ImGuiManger.h" />
+    <ClInclude Include="Engine\base\SrvDescriptorHeap.h" />
     <ClInclude Include="Engine\base\WinApp.h" />
     <ClInclude Include="Engine\Manager\Audio\Audio.h" />
     <ClInclude Include="Engine\Manager\Collision\Collider.h" />

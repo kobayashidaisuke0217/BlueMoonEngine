@@ -25,11 +25,11 @@ public:
 	void Finalize();*/
 #pragma endregion 
 	void Run();
-
+	
 private:
 	BlueMoon* blueMoon_;
 	WinApp* winApp_ = nullptr;
-	Input* input;
+	Input* input ;
 	Texturemanager* textureManager_;
 	Audio* audio_;
 	std::unique_ptr<Iscene> sceneArr_[2];
