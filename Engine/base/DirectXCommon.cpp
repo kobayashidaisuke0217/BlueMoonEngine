@@ -233,6 +233,7 @@ void DirectXCommon::PostDraw() {
 		//イベント待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
+	updateFixFPS();
 	//次のフレーム用のコマンドリストを準備
 	hr_ = commandAllocator_->Reset();
 	assert(SUCCEEDED(hr_));
