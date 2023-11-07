@@ -116,16 +116,16 @@ void GameScene::Draw()
 void GameScene::Draw3D()
 {
 	
-	
+	sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
 	
 	blueMoon_->PariclePreDraw();
 	particle_->Draw(worldTransformtriangle_[0], viewProjection_, {1.0f,1.0f,1.0f,1.0f}, monsterBallResourceNum);
 	particle2_->Draw(worldTransformtriangle_[1], viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, monsterBallResourceNum);
 
 	blueMoon_->ModelPreDrawWireFrame();
-	if (sphereIsAlive_) {
+	
 		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
-	}
+	
 	
 }
 
@@ -147,6 +147,7 @@ void GameScene::Draw2D() {
 }
 void GameScene::Finalize()
 {
+	delete particle2_;
 	delete particle_;
 	delete sphere_;
 	delete  sprite_;
