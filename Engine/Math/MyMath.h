@@ -58,10 +58,15 @@ struct DirectionalLightData {
 struct MaterialData {
 	std::string textureFilePath;
 };
+
+struct Emitter {
+	Transform transform;
+};
 struct ParticleData {
 	Transform transform;
 	Vector3 velocity;
 	Vector4 color;
+	Emitter emitter;
 	float lifeTime;
 	float currentTime;
 	bool isAlive;

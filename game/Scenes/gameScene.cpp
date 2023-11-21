@@ -59,6 +59,7 @@ void GameScene::Initialize()
 	sphereIsAlive_ = false;
 	modelIsAlive_ = true;
 	particleCo = 0;
+	emitter_.transform = worldTransformtriangle_[0].GetTransform();
 	particleTransform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	particleuvTransform =
 	{
@@ -97,9 +98,9 @@ void GameScene::Update()
 	ImGui::Checkbox("par", &Isparticle);
 	ImGui::End();
 	ImGui::Begin("Scene");
-	ImGui::DragFloat3("translate", &worldTransformtriangle_[0].translation_.x, 0.1f);
-	ImGui::DragFloat3("scale", &worldTransformtriangle_[0].scale_.x, 0.1f);
-	ImGui::DragFloat3("rotate", &worldTransformtriangle_[0].rotation_.x, 0.1f);
+	ImGui::DragFloat3("translate", &emitter_.transform.translate.x, 0.1f);
+	ImGui::DragFloat3("scale", &emitter_.transform.scale.x, 0.1f);
+	ImGui::DragFloat3("rotate", &emitter_.transform.rotate.x, 0.1f);
 	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
@@ -108,7 +109,7 @@ void GameScene::Update()
 	}
 	ImGui::End();
 	if (Isparticle) {
-		particle_->AddParticle(particleCo);
+		particle_->AddParticle(emitter_, particleCo);
 	}
 	Isparticle = false;
 }
@@ -131,7 +132,7 @@ void GameScene::Draw3D()
 	//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
 	
 	blueMoon_->PariclePreDraw();
-	particle_->Draw(worldTransformtriangle_[0].GetTransform(), viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
+	particle_->Draw( viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
 	//particle2_->Draw(worldTransformtriangle_[1].GetTransform(), viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, BlackResourceNum);
 
 	blueMoon_->ModelPreDrawWireFrame();

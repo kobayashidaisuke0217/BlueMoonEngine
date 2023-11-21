@@ -39,7 +39,7 @@ void Particle::CreateSRV(uint32_t num)
 	index_ = srvHeap_->GetIndex();
 	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHeap_->GetCPUHandle(srvHeap_->GetIndex()));
 }
-ParticleData Particle::MakeNewParticle(std::mt19937& randomEngine)
+ParticleData Particle::MakeNewParticle(const Emitter& emitter,std::mt19937& randomEngine)
 {
 	ParticleData particle;
 	std::uniform_real_distribution<float>distribution(-1.0f, 1.0f);
@@ -53,6 +53,7 @@ ParticleData Particle::MakeNewParticle(std::mt19937& randomEngine)
 	particle.lifeTime = distTime(randomEngine);
 	particle.currentTime = 0.0f;
 	particle.isAlive = true;
+	particle.emitter = emitter;
 	return particle;
 }
 void Particle::SetColor() {
@@ -62,7 +63,7 @@ void Particle::SetColor() {
 
 }
 
-void Particle::Draw(const Transform& transform, const ViewProjection& viewProjection, const Vector4& material, uint32_t index)
+void Particle::Draw( const ViewProjection& viewProjection, const Vector4& material, uint32_t index)
 {
 	Transform uvTransform = { { 1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f}, {0.0f,0.0f,0.0f} };
 
@@ -73,15 +74,14 @@ void Particle::Draw(const Transform& transform, const ViewProjection& viewProjec
 	Matrix4x4 billboard = Multiply(bakToFront, viewProjection.matView);
 	billboard.m[3][0] = 0.0f;
 	billboard.m[3][1] = 0.0f;
-	billboard.m[3][2] = 0.0f;
-	Matrix4x4 matworld = MakeAffineMatrix(transform.scale, {0.0f,0.0f,0.0f }, transform.translate);
+	billboard.m[3][2] = 0.0f; 
 	instanceCount = 0;
 	for (std::list<ParticleData>::iterator iterator = particles_.begin();
 		iterator != particles_.end(); ++iterator) {
 		
 		
 		instancingData[instanceCount].World = MakeBillBoardMatrix((*iterator).transform.scale, billboard, (*iterator).transform.translate); //MakeAffineMatrix(particles_[i].transform.scale, particles_[i].transform.rotate, particles_[i].transform.translate);
-		instancingData[instanceCount].World = Multiply(instancingData[instanceCount].World,matworld);
+		instancingData[instanceCount].World = Multiply(instancingData[instanceCount].World, MakeAffineMatrix((*iterator).emitter.transform.scale, {0.0f,0.0f,0.0f}, (*iterator).emitter.transform.translate));
 		instanceCount++;
 	}
 	*materialData_ = { material,false };
@@ -123,6 +123,7 @@ void Particle::Update()
 			instancingData[instanceCount].World = MakeIdentity4x4();
 			(*iterator).transform.translate = Add((*iterator).transform.translate, (*iterator).velocity * kDeltTime);
 			(*iterator).currentTime += kDeltTime;
+			
 			instancingData[instanceCount].Color = (*iterator).color;
 			++DrawInstanceNum_;
 			++instanceCount;
@@ -136,13 +137,13 @@ void Particle::Finalize()
 
 }
 
-void Particle::AddParticle(const int& count)
+void Particle::AddParticle(const Emitter& emitter,const int& count)
 {
 	std::random_device seedGenerator_;
 	std::mt19937 randomEngine(seedGenerator_());
 	instanceCount = 0;
 	if (particles_.size() == 0) {
-		particles_.push_back(MakeNewParticle(randomEngine));
+		particles_.push_back(MakeNewParticle(emitter,randomEngine));
 		instanceCount++;
 	}
 	for (int i = 0; i < count; i++) {
@@ -156,7 +157,7 @@ void Particle::AddParticle(const int& count)
 				}
 				
 				if ((*iterator).isAlive == false) {
-					particles_.insert(iterator, MakeNewParticle(randomEngine));
+					particles_.insert(iterator, MakeNewParticle(emitter,randomEngine));
 					instanceCount++;
 				continue;
 				}
@@ -165,7 +166,7 @@ void Particle::AddParticle(const int& count)
 			if (instanceCount >= kNumMaxInstance_) {
 				break;
 			}
-				particles_.push_back(MakeNewParticle(randomEngine));
+				particles_.push_back(MakeNewParticle(emitter,randomEngine));
 				instanceCount++;
 				continue;
 			

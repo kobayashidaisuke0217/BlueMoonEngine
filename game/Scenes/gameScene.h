@@ -48,6 +48,7 @@ private:
 	ViewProjection viewProjection_;
 	Transform particleTransform_;
 	Transform particleuvTransform;
+	Emitter emitter_;
 	int monsterBallResourceNum;
 	int BlackResourceNum;
 	bool triangleIsAlive_;

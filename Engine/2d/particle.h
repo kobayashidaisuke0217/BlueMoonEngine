@@ -13,10 +13,10 @@ class Particle
 {
 public:
 	void Initialize(uint32_t Drawparticle);
-	void Draw(const Transform& transform, const ViewProjection& viewProjection, const Vector4& material, uint32_t index);
+	void Draw( const ViewProjection& viewProjection, const Vector4& material, uint32_t index);
 	void Update();
 	void Finalize();
-	void AddParticle(const int& count);
+	void AddParticle(const Emitter& emitter,const int& count);
 private:
 	void SettingVertex();
 	void SetColor();
@@ -44,6 +44,6 @@ private:
 	uint32_t DrawInstanceNum_;
 	int instanceCount;
 private:
-	ParticleData MakeNewParticle(std::mt19937& randomEngine);
+	ParticleData MakeNewParticle(const Emitter& emitter,std::mt19937& randomEngine);
 };
 
