@@ -71,7 +71,7 @@ void Particle::Draw( const ViewProjection& viewProjection, const Vector4& materi
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeRotateZMatrix(uvTransform.rotate.z));
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeTranslateMatrix(uvTransform.translate));
 	Matrix4x4 bakToFront = MakeRotateYMatrix(std::numbers::pi_v<float>);
-	Matrix4x4 billboard = Multiply(bakToFront, viewProjection.matView);
+	Matrix4x4 billboard = Multiply(bakToFront,Inverse( viewProjection.matView));
 	billboard.m[3][0] = 0.0f;
 	billboard.m[3][1] = 0.0f;
 	billboard.m[3][2] = 0.0f; 
@@ -122,7 +122,7 @@ void Particle::Update()
 			}
 			instancingData[instanceCount].World = MakeIdentity4x4();
 			(*iterator).transform.translate = Add((*iterator).transform.translate, (*iterator).velocity * kDeltTime);
-			(*iterator).currentTime += kDeltTime;
+			//(*iterator).currentTime += kDeltTime;
 			
 			instancingData[instanceCount].Color = (*iterator).color;
 			++DrawInstanceNum_;

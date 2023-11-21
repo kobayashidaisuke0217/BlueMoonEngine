@@ -35,7 +35,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_;
 	Transformmatrix* wvpData_;
 	DirectionalLight* directionalLight_;
-	static	const uint32_t kNumMaxInstance_ = 100000;
+	static	const uint32_t kNumMaxInstance_ = 1000;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	ParticleForGPU* instancingData;
 	std::list<ParticleData>particles_;
