@@ -72,7 +72,7 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain4>swapChain_;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
-	
+	uint32_t knumDescriptor = 100000;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_;
 	//RTVを２つ作るのでディスクリプタを２つ用意
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvhandle;

@@ -5,34 +5,40 @@ void BlueMoon::Initialize(int32_t width, int32_t height) {
 	win_ = WinApp::GetInstance();
 	direct_ = DirectXCommon::GetInstance();
 	direct_->Initialize(win_, win_->kClientWidth, win_->kClientHeight);
-	
+
 
 	PSO2DCount_ = 0;
 	InitializeDxcCompiler();
-
-
 	CreateRootSignature3D();
-	CreateRootSignature2D();
-	CreateRootSignatureParticle();
 	CreateInputlayOut();
-	CreateInputlayOut2D();
-	CreateInputlayOutParticle();
 	SettingBlendState();
-
 	SettingRasterizerState3D();
-	SettingRasterizerState2D();
-	SettingRasterizerStateParticle();
 	SettingDepth();
 	InitializePSO3D();
 	InitializePSO3DWireFrame();
+
+	CreateRootSignature2D();
+	CreateInputlayOut2D();
+	SettingRasterizerState2D();
 	for (int i = 0; i < 5; i++) {
 
 		InitializePSO2D();
 	}
+	CreateRootSignatureParticle();
+	CreateInputlayOutParticle();
+	SettingRasterizerStateParticle();
 	InitializePSOParticle();
 	SettingViePort();
 
 	SettingScissor();
+
+
+
+
+
+
+
+
 
 }
 
@@ -348,6 +354,10 @@ void BlueMoon::SettingDepth()
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	depthStencilDescParticle.DepthEnable = true;
+	depthStencilDescParticle.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	depthStencilDescParticle.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	
 }
 BlueMoon* BlueMoon::GetInstance()
 {
@@ -646,7 +656,7 @@ void BlueMoon::CreateRootSignatureParticle()
 void BlueMoon::SettingRasterizerStateParticle()
 {
 	//裏面（時計回り）を表示しない
-	rasterizerDescParticle_.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDescParticle_.CullMode = D3D12_CULL_MODE_NONE;
 	//三角形の中を塗りつぶす
 	rasterizerDescParticle_.FillMode = D3D12_FILL_MODE_SOLID;
 
@@ -670,7 +680,7 @@ void BlueMoon::InitializePSOParticle()
 		vertexShaderBlobParticle_->GetBufferSize() };//vertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlobParticle_->GetBufferPointer(),
 		pixelShaderBlobParticle_->GetBufferSize() };//pixcelShader
-	graphicsPipelineStateDesc.BlendState = blendDesc_[0];//BlendState
+	graphicsPipelineStateDesc.BlendState = blendDesc_[kBlendModeAdd];//BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDescParticle_;//rasterizerState
 	//書き込むRTVの情報
 	graphicsPipelineStateDesc.NumRenderTargets = 1;
@@ -681,7 +691,7 @@ void BlueMoon::InitializePSOParticle()
 	//どのように画面に色を打ち込むのかの設定（気にしなく良い）
 	graphicsPipelineStateDesc.SampleDesc.Count = 1;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
+	graphicsPipelineStateDesc.DepthStencilState = depthStencilDescParticle;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	//実際に生成
 	graphicsPipelineStateParticle_ = nullptr;

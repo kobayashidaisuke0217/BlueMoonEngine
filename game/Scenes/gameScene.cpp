@@ -18,7 +18,7 @@ void GameScene::Initialize()
 	viewProjection_.translation_ = { 0.0f,0.0f,-5.0f };
 	uvResourceNum = textureManager_->Load("Resource/uvChecker.png");
 	monsterBallResourceNum = textureManager_->Load("Resource/monsterBall.png");
-	BlackResourceNum = textureManager_->Load("Resource/Black.png");
+	BlackResourceNum = textureManager_->Load("Resource/circle.png");
 	material[0] = { 1.0f,1.0f,1.0f,1.0f };
 	material[1] = { 1.0f,1.0f,1.0f,1.0f };
 	spritedataLeftTop_ = { 0.0f,0.0f,0.0f,1.0f };
@@ -51,13 +51,14 @@ void GameScene::Initialize()
 	sprite_ = new Sprite();
 	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
 	particle_ = new Particle();
-	particle_->Initialize();
+	particle_->Initialize(10);
 	particle2_ = new Particle();
-	particle2_->Initialize();
+	particle2_->Initialize(13);
 	triangleIsAlive_ = false;
 	spriteIsAlive_ = true;
 	sphereIsAlive_ = false;
 	modelIsAlive_ = true;
+	particleCo = 0;
 	particleTransform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	particleuvTransform =
 	{
@@ -78,16 +79,23 @@ void GameScene::Initialize()
 
 void GameScene::Update()
 {
-	
+	bool Isparticle = false;
 	
 	
 	
 	worldTransformtriangle_[0].UpdateMatrix();
 	worldTransformtriangle_[1].UpdateMatrix();
+	particle_->Update();
+	particle2_->Update();
 	worldTransformModel_.UpdateMatrix();
 	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();
-
+	ImGui::Begin("camera");
+	ImGui::DragFloat3("translate", &viewProjection_.translation_.x, 0.1f);
+	ImGui::DragFloat3("rotate", &viewProjection_.rotation_.x, 0.1f);
+	ImGui::DragInt("parcount", &particleCo);
+	ImGui::Checkbox("par", &Isparticle);
+	ImGui::End();
 	ImGui::Begin("Scene");
 	ImGui::DragFloat3("translate", &worldTransformtriangle_[0].translation_.x, 0.1f);
 	ImGui::DragFloat3("scale", &worldTransformtriangle_[0].scale_.x, 0.1f);
@@ -99,6 +107,10 @@ void GameScene::Update()
 		sceneNum = 1;
 	}
 	ImGui::End();
+	if (Isparticle) {
+		particle_->AddParticle(particleCo);
+	}
+	Isparticle = false;
 }
 
 
@@ -116,15 +128,15 @@ void GameScene::Draw()
 void GameScene::Draw3D()
 {
 	
-	sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
+	//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
 	
 	blueMoon_->PariclePreDraw();
-	particle_->Draw(worldTransformtriangle_[0], viewProjection_, {1.0f,1.0f,1.0f,1.0f}, monsterBallResourceNum);
-	particle2_->Draw(worldTransformtriangle_[1], viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, monsterBallResourceNum);
+	particle_->Draw(worldTransformtriangle_[0].GetTransform(), viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
+	//particle2_->Draw(worldTransformtriangle_[1].GetTransform(), viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, BlackResourceNum);
 
 	blueMoon_->ModelPreDrawWireFrame();
 	
-		sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
+		//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
 	
 	
 }

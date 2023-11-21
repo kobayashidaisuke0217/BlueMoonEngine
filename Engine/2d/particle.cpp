@@ -1,31 +1,26 @@
 #include "particle.h"
 #include <assert.h>
 #include "BlueMoon.h"
-
-void Particle::Initialize()
+#include <numbers>
+void Particle::Initialize(uint32_t Drawparticle)
 {
 	direct_ = DirectXCommon::GetInstance();
 
 	textureManager_ = Texturemanager::GetInstance();
 	srvHeap_ = SrvDescriptorHeap::GetInstance();
 	directionalLight_ = DirectionalLight::GetInstance();
+	knumInstance_ =300;
 	SettingVertex();
 	SetColor();
 	TransformMatrix();
 }
 void Particle::TransformMatrix()
 {
-
-	instancingResource_ = direct_->CreateBufferResource(direct_->GetDevice().Get(), sizeof(Matrix4x4) * kNumInstance_);
+	
+	
+	instancingResource_ = direct_->CreateBufferResource(direct_->GetDevice().Get(), sizeof(ParticleForGPU) * kNumMaxInstance_);
 	instancingResource_->Map(0, nullptr, reinterpret_cast<void**>(&instancingData));
 	CreateSRV(1);
-	for (uint32_t index = 0; index < kNumInstance_; ++index) {
-		instancingData[index] = MakeIdentity4x4();
-		transforms[index].scale = { 1.0f,1.0f,1.0f };
-		transforms[index].rotate = { 0.0f,0.0f,0.0f };
-		transforms[index].translate = { index * 0.1f,index * 0.1f,index * 0.1f };
-
-	}
 }
 void Particle::CreateSRV(uint32_t num)
 {
@@ -35,14 +30,30 @@ void Particle::CreateSRV(uint32_t num)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;//2Dテクスチャ
 	srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	srvDesc.Buffer.NumElements = kNumInstance_;
-	srvDesc.Buffer.StructureByteStride = sizeof(Matrix4x4);
+	srvDesc.Buffer.NumElements = kNumMaxInstance_;
+	srvDesc.Buffer.StructureByteStride = sizeof(ParticleForGPU);
 	srvHeap_->AddIndex();
 	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//direct_->GetSrvHeap()->GetGPUDescriptorHandleForHeapStart();
 	srvHeap_->SetCPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
 	//srvHandleGPU_ = textureManager_->GettextureSrvHandleGPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
 	index_ = srvHeap_->GetIndex();
 	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHeap_->GetCPUHandle(srvHeap_->GetIndex()));
+}
+ParticleData Particle::MakeNewParticle(std::mt19937& randomEngine)
+{
+	ParticleData particle;
+	std::uniform_real_distribution<float>distribution(-1.0f, 1.0f);
+	std::uniform_real_distribution<float>distColor(-1.0f, 1.0f);
+	std::uniform_real_distribution<float>distTime(1.0f, 3.0f);
+	particle.transform.scale = { 1.0f,1.0f,1.0f };
+	particle.transform.rotate = { 0.0f,0.0f,0.0f };
+	particle.transform.translate = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
+	particle.velocity = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
+	particle.color = { distColor(randomEngine),distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
+	particle.lifeTime = distTime(randomEngine);
+	particle.currentTime = 0.0f;
+	particle.isAlive = true;
+	return particle;
 }
 void Particle::SetColor() {
 	materialResource_ = DirectXCommon::CreateBufferResource(direct_->GetDevice().Get(), sizeof(Material));
@@ -51,16 +62,27 @@ void Particle::SetColor() {
 
 }
 
-void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewProjection, const Vector4& material, uint32_t index)
+void Particle::Draw(const Transform& transform, const ViewProjection& viewProjection, const Vector4& material, uint32_t index)
 {
 	Transform uvTransform = { { 1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f}, {0.0f,0.0f,0.0f} };
 
 	Matrix4x4 uvtransformMtrix = MakeScaleMatrix(uvTransform.scale);
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeRotateZMatrix(uvTransform.rotate.z));
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeTranslateMatrix(uvTransform.translate));
-	for (uint32_t i = 0; i < kNumInstance_; ++i) {
-		instancingData[i] = MakeAffineMatrix(transforms[i].scale, transforms[i].rotate, transforms[i].translate);
-		instancingData[i] = Multiply(instancingData[i], transform.matWorld_);
+	Matrix4x4 bakToFront = MakeRotateYMatrix(std::numbers::pi_v<float>);
+	Matrix4x4 billboard = Multiply(bakToFront, viewProjection.matView);
+	billboard.m[3][0] = 0.0f;
+	billboard.m[3][1] = 0.0f;
+	billboard.m[3][2] = 0.0f;
+	Matrix4x4 matworld = MakeAffineMatrix(transform.scale, {0.0f,0.0f,0.0f }, transform.translate);
+	instanceCount = 0;
+	for (std::list<ParticleData>::iterator iterator = particles_.begin();
+		iterator != particles_.end(); ++iterator) {
+		
+		
+		instancingData[instanceCount].World = MakeBillBoardMatrix((*iterator).transform.scale, billboard, (*iterator).transform.translate); //MakeAffineMatrix(particles_[i].transform.scale, particles_[i].transform.rotate, particles_[i].transform.translate);
+		instancingData[instanceCount].World = Multiply(instancingData[instanceCount].World,matworld);
+		instanceCount++;
 	}
 	*materialData_ = { material,false };
 	materialData_->uvTransform = uvtransformMtrix;
@@ -82,12 +104,74 @@ void Particle::Draw(const WorldTransform& transform, const ViewProjection& viewP
 
 
 	//描画！(DrawCall/ドローコール)・3頂点で1つのインスタンス。インスタンスについては今後
-	direct_->GetCommandList()->DrawInstanced(6, kNumInstance_, 0, 0);
+	direct_->GetCommandList()->DrawInstanced(6, DrawInstanceNum_, 0, 0);
+
+}
+void Particle::Update()
+{
+	const float kDeltTime = 1.0f / 60.0f;
+	DrawInstanceNum_ = 0;
+	instanceCount = 0;
+	for (std::list<ParticleData>::iterator iterator = particles_.begin();
+		iterator != particles_.end(); ) {
+		if (DrawInstanceNum_ < kNumMaxInstance_) {
+			if ((*iterator).lifeTime <= (*iterator).currentTime) {
+				(*iterator).isAlive = false;
+				iterator = particles_.erase(iterator);
+				continue;
+			}
+			instancingData[instanceCount].World = MakeIdentity4x4();
+			(*iterator).transform.translate = Add((*iterator).transform.translate, (*iterator).velocity * kDeltTime);
+			(*iterator).currentTime += kDeltTime;
+			instancingData[instanceCount].Color = (*iterator).color;
+			++DrawInstanceNum_;
+			++instanceCount;
+			++iterator;
+		}
+	}
 
 }
 void Particle::Finalize()
 {
 
+}
+
+void Particle::AddParticle(const int& count)
+{
+	std::random_device seedGenerator_;
+	std::mt19937 randomEngine(seedGenerator_());
+	instanceCount = 0;
+	if (particles_.size() == 0) {
+		particles_.push_back(MakeNewParticle(randomEngine));
+		instanceCount++;
+	}
+	for (int i = 0; i < count; i++) {
+		instanceCount=0;
+	
+			for (std::list<ParticleData>::iterator iterator = particles_.begin();
+				iterator != particles_.end(); ++iterator) {
+				instanceCount++;
+				if (instanceCount >= kNumMaxInstance_) {
+					break;
+				}
+				
+				if ((*iterator).isAlive == false) {
+					particles_.insert(iterator, MakeNewParticle(randomEngine));
+					instanceCount++;
+				continue;
+				}
+				
+			}
+			if (instanceCount >= kNumMaxInstance_) {
+				break;
+			}
+				particles_.push_back(MakeNewParticle(randomEngine));
+				instanceCount++;
+				continue;
+			
+		}
+		
+	
 }
 
 void Particle::SettingVertex() {

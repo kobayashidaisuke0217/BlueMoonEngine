@@ -7,13 +7,16 @@
 #include "Worldtransform.h"
 #include "ViewProjection.h"
 #include "SrvDescriptorheap.h"
+#include<random>
+#include <list>
 class Particle
 {
 public:
-	void Initialize();
-	void Draw(const WorldTransform& transform, const ViewProjection& viewProjection, const Vector4& material, uint32_t index);
+	void Initialize(uint32_t Drawparticle);
+	void Draw(const Transform& transform, const ViewProjection& viewProjection, const Vector4& material, uint32_t index);
+	void Update();
 	void Finalize();
-
+	void AddParticle(const int& count);
 private:
 	void SettingVertex();
 	void SetColor();
@@ -32,10 +35,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_;
 	Transformmatrix* wvpData_;
 	DirectionalLight* directionalLight_;
-	static	const uint32_t kNumInstance_ = 10;
+	static	const uint32_t kNumMaxInstance_ = 100000;
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
-	Matrix4x4* instancingData;
-	Transform transforms[kNumInstance_];
+	ParticleForGPU* instancingData;
+	std::list<ParticleData>particles_;
 	uint32_t index_;
+	int knumInstance_;
+	uint32_t DrawInstanceNum_;
+	int instanceCount;
+private:
+	ParticleData MakeNewParticle(std::mt19937& randomEngine);
 };
 

@@ -51,7 +51,7 @@ private:
 	DirectXCommon* direct_;
 
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	
+	D3D12_DEPTH_STENCIL_DESC depthStencilDescParticle{};
 
 
 

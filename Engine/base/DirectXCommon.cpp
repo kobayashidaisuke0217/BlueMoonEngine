@@ -179,7 +179,7 @@ void DirectXCommon::CreateFence() {
 }
 void DirectXCommon::CreateSrvheap()
 {
-	srvDescriptorHeap_ = CreateDescriptionHeap(device_.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap_ = CreateDescriptionHeap(device_.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, knumDescriptor, true);
 }
 void DirectXCommon::PreDraw()
 {

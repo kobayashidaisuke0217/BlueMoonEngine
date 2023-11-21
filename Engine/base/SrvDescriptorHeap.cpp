@@ -4,7 +4,7 @@ void SrvDescriptorHeap::Initialize()
 {
 	dirctXCommon_ = DirectXCommon::GetInstance();
 	descriptorSizeSRV = dirctXCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	Index_ = 0;
+	Index_ = 1;
 }
 
 SrvDescriptorHeap* SrvDescriptorHeap::GetInstance()
