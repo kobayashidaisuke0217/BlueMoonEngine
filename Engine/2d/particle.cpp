@@ -122,7 +122,7 @@ void Particle::Update()
 			}
 			instancingData[instanceCount].World = MakeIdentity4x4();
 			(*iterator).transform.translate = Add((*iterator).transform.translate, (*iterator).velocity * kDeltTime);
-			//(*iterator).currentTime += kDeltTime;
+			(*iterator).currentTime += kDeltTime;
 			
 			instancingData[instanceCount].Color = (*iterator).color;
 			++DrawInstanceNum_;
