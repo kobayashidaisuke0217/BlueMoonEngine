@@ -27,11 +27,11 @@ private:
 
 	uint32_t descriptorSizeRTV;
 	uint32_t descriptorSizeDSV;
-
+	std::vector<std::string> name_;
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(ID3D12Device* device, const DirectX::TexMetadata& metadata);
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadtextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, uint32_t index);
 	DirectX::ScratchImage  LoadTexture(const std::string& filePath);
-	void LoadTexture(const std::string& filePath, uint32_t index);
+	uint32_t LoadTexture(const std::string& filePath, uint32_t index);
 };
 

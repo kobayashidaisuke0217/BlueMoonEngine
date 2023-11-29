@@ -9,7 +9,7 @@ ImGuiManger* ImGuiManger::GetInstance()
 void ImGuiManger::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
 {
 	dxCommon_ = dxCommon;
-	 
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
@@ -35,19 +35,19 @@ void ImGuiManger::Begin()
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ID3D12DescriptorHeap* descriptorHeaps[] = { dxCommon_->GetSrvHeap().Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { dxCommon_->GetSrvHeap().Get() };
 	dxCommon_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 }
 
 void ImGuiManger::End()
 {
 	ImGui::Render();
-	
+
 }
 
 void ImGuiManger::Draw()
 {
-	
+
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxCommon_->GetCommandList().Get());
-	
+
 }

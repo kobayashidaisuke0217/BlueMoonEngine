@@ -43,13 +43,14 @@ ParticleData Particle::MakeNewParticle(const Emitter& emitter,std::mt19937& rand
 {
 	ParticleData particle;
 	std::uniform_real_distribution<float>distribution(-1.0f, 1.0f);
+	std::uniform_real_distribution<float>distrivelocity(-5.0f, 5.0f);
 	std::uniform_real_distribution<float>distColor(-1.0f, 1.0f);
 	std::uniform_real_distribution<float>distTime(1.0f, 3.0f);
 	particle.transform.scale = { 1.0f,1.0f,1.0f };
 	particle.transform.rotate = { 0.0f,0.0f,0.0f };
 	particle.transform.translate = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
-	particle.velocity = { distribution(randomEngine),distribution(randomEngine),distribution(randomEngine) };
-	particle.color = { distColor(randomEngine),distColor(randomEngine) ,distColor(randomEngine) ,1.0f };
+	particle.velocity = { distrivelocity(randomEngine),distrivelocity(randomEngine),distrivelocity(randomEngine) };
+	particle.color = { distColor(randomEngine),distColor(randomEngine),distColor(randomEngine) ,1.0f };
 	particle.lifeTime = distTime(randomEngine);
 	particle.currentTime = 0.0f;
 	particle.isAlive = true;
