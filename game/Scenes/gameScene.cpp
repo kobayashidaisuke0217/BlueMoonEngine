@@ -75,17 +75,26 @@ void GameScene::Initialize()
 	globalVariables->AddItem(groupName, "Test", 90.0f);
 	globalVariables->AddItem(groupName, "Translation", worldTransformtriangle_[0].translation_);
 	ApplyGlobalVariables();
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+	player_ = std::make_unique<Player>();
+	inputhandler_ = std::make_unique<Inputhandler>();
 	
+	inputhandler_->AssignMoveLeftCommandToPressKeyA();
+	inputhandler_->AssignMoveRightCommandToPressKeyD();
+	
+	player_->Init();
 }
 
 void GameScene::Update()
 {
 	bool Isparticle = false;
 	
+	command_ = inputhandler_->HandleInput();
+	if (this->command_) {
+		command_->Exec(*player_.get());
+	}
 	
-	
-	worldTransformtriangle_[0].UpdateMatrix();
-	worldTransformtriangle_[1].UpdateMatrix();
+	player_->Update();
 	particle_->Update();
 	particle2_->Update();
 	worldTransformModel_.UpdateMatrix();
@@ -112,6 +121,8 @@ void GameScene::Update()
 		particle_->AddParticle(emitter_, particleCo);
 	}
 	Isparticle = false;
+	worldTransformtriangle_[0].UpdateMatrix();
+	worldTransformtriangle_[1].UpdateMatrix();
 }
 
 
@@ -130,7 +141,7 @@ void GameScene::Draw3D()
 {
 	
 	//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
-	
+	player_->Draw(viewProjection_);
 	blueMoon_->PariclePreDraw();
 	particle_->Draw( viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
 	//particle2_->Draw(worldTransformtriangle_[1].GetTransform(), viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, BlackResourceNum);

@@ -11,6 +11,7 @@
 #include "Texturemanager.h"
 #include "GlobalVariables.h"
 #include "Particle.h"
+#include<game/Manager/Inputhandler.h>
 class GameScene:public Iscene
 {
 public:
@@ -57,6 +58,15 @@ private:
 	bool modelIsAlive_;
 	int blendCount_;
 	int particleCo; 
+
+
+/// <summary>
+/// コマンドパターン
+/// </summary>
+	std::unique_ptr<Inputhandler> inputhandler_ = nullptr;
+	std::unique_ptr<Player> player_ = nullptr;
+	ICommand* command_ = nullptr;
+private:
 	void Draw2D();
 	void Draw3D();
 	void ApplyGlobalVariables();
