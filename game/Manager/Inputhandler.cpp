@@ -2,10 +2,10 @@
 #include "Input.h"
 ICommand* Inputhandler::HandleInput()
 {
-	if (Input::GetInstance()->PressKey(DIK_D)) {
+	if (Input::GetInstance()->PushKey(DIK_D)) {
 		return pressKeyD_;
 	}
-	if (Input::GetInstance()->PressKey(DIK_A)) {
+	if (Input::GetInstance()->PushKey(DIK_A)) {
 		return pressKeyA_;
 	}
 	return nullptr;
