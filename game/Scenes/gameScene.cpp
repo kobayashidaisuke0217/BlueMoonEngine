@@ -58,7 +58,7 @@ void GameScene::Initialize()
 	spriteIsAlive_ = true;
 	sphereIsAlive_ = false;
 	modelIsAlive_ = true;
-	particleCo = 3000;
+	particleCo = 30;
 	emitter_.transform = worldTransformtriangle_[0].GetTransform();
 	particleTransform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	particleuvTransform =
