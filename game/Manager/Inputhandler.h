@@ -1,5 +1,5 @@
 #pragma once
-#include "game/Object/command.h"
+#include "command.h"
 class Inputhandler
 {
 public:

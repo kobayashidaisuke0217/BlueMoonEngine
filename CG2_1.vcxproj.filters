@@ -171,10 +171,10 @@
     <ClCompile Include="game\Object\Player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="game\Object\command.cpp">
+    <ClCompile Include="game\Manager\Inputhandler.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="game\Manager\Inputhandler.cpp">
+    <ClCompile Include="game\Manager\command.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -287,10 +287,10 @@
     <ClInclude Include="game\Object\Player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="game\Object\command.h">
+    <ClInclude Include="game\Manager\Inputhandler.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="game\Manager\Inputhandler.h">
+    <ClInclude Include="game\Manager\command.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
