@@ -6,15 +6,42 @@ class ICommand
 {
 public:
 	
-	virtual ~ICommand();
-	virtual void Exec(Player& player) = 0;
+	virtual ~ICommand() = default;
+	virtual void Exec() = 0;
 };
-class MoveRightCommand :public ICommand {
+
+class UnitMoveCommand :public ICommand {
 public:
-	void Exec(Player& player)override;
+	UnitMoveCommand(Unit* Unit, Vector2 velo);
+	void Exec()override;
+private:
+	Unit* unit_;
+	Vector2 velocity_;
 };
-class MoveLeftCommand :public ICommand {
+
+class UnitMoveEndCommand :public ICommand {
 public:
-	void Exec(Player& player)override;
+	UnitMoveEndCommand(Unit* Unit, Player* player);
+	void Exec()override;
+private:
+	Unit* unit_;
+	Player* player_;
+};
+
+
+class PlayerMoveCommand :public ICommand {
+public:
+	PlayerMoveCommand(Player* player, Vector2 velo);
+	void Exec()override;
+private:
+	Player* player_;
+	Vector2 velocity_;
+};
+class SelectUnitCommand : public ICommand {
+public:
+	SelectUnitCommand(Player* player);
+	void Exec()override;
+private:
+	Player* player_;
 };
 

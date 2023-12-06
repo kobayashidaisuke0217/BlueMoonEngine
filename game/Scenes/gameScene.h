@@ -12,6 +12,7 @@
 #include "GlobalVariables.h"
 #include "Particle.h"
 #include"game/Manager/Inputhandler.h"
+#include"game/Object/Unit.h"
 class GameScene:public Iscene
 {
 public:
@@ -66,6 +67,7 @@ private:
 	std::unique_ptr<Inputhandler> inputhandler_ = nullptr;
 	std::unique_ptr<Player> player_ = nullptr;
 	ICommand* command_ = nullptr;
+	std::unique_ptr<Unit> unit_;
 private:
 	void Draw2D();
 	void Draw3D();

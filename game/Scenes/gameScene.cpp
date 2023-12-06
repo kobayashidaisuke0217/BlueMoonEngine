@@ -78,9 +78,7 @@ void GameScene::Initialize()
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 	player_ = std::make_unique<Player>();
 	inputhandler_ = std::make_unique<Inputhandler>();
-	
-	inputhandler_->AssignMoveLeftCommandToPressKeyA();
-	inputhandler_->AssignMoveRightCommandToPressKeyD();
+	unit_ = std::make_unique<Unit>();
 	
 	player_->Init();
 }
@@ -88,10 +86,14 @@ void GameScene::Initialize()
 void GameScene::Update()
 {
 	bool Isparticle = false;
-	
-	command_ = inputhandler_->HandleInput();
+	if (player_->GetSelectMode() == Selector) {
+		command_ = inputhandler_->PlayerHandleInput(player_.get());
+	}
+	else {
+		command_ = inputhandler_->UnitHandleInput(player_->GetSelectUnit());
+	}
 	if (this->command_) {
-		command_->Exec(*player_.get());
+		command_->Exec();
 	}
 	
 	player_->Update();
@@ -163,11 +165,12 @@ void GameScene::ApplyGlobalVariables()
 
 void GameScene::Draw2D() {
 	blueMoon_->SetBlendMode(blendCount_);
-	if (spriteIsAlive_ ) {
+	/*if (spriteIsAlive_ ) {
 		sprite_->Draw(spriteTransform_, SpriteuvTransform, spriteMaterial, monsterBallResourceNum);
 	
-	}
-
+	}*/
+	player_->Draw2D();
+	//unit_->Draw();
 }
 void GameScene::Finalize()
 {

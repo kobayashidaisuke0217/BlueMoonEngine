@@ -1,22 +1,52 @@
 #include "Inputhandler.h"
 #include "Input.h"
-ICommand* Inputhandler::HandleInput()
+Inputhandler::Inputhandler()
 {
-	if (Input::GetInstance()->PressKey(DIK_D)) {
-		return pressKeyD_;
+}
+Inputhandler::~Inputhandler()
+{
+}
+ICommand* Inputhandler::PlayerHandleInput(Player* player)
+{
+	player_ = player;
+	if (Input::GetInstance()->PushKey(DIK_D)) {
+		return new PlayerMoveCommand(player,{ 1.0f,0.0f });
 	}
-	if (Input::GetInstance()->PressKey(DIK_A)) {
-		return pressKeyA_;
+	if (Input::GetInstance()->PushKey(DIK_A)) {
+		return new PlayerMoveCommand(player, { -1.0f,0.0f });
+	}
+
+	if (Input::GetInstance()->PushKey(DIK_W)) {
+		return new PlayerMoveCommand(player, {0.0f,-1.0f });
+	}
+	if (Input::GetInstance()->PushKey(DIK_S)) {
+		return new PlayerMoveCommand(player, { 0.0f,1.0f });
+	}
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		return new SelectUnitCommand(player);
 	}
 	return nullptr;
 }
 
-void Inputhandler::AssignMoveLeftCommandToPressKeyA()
+ICommand* Inputhandler::UnitHandleInput(Unit* unit)
 {
-	this->pressKeyA_ = new MoveLeftCommand();
+	if (Input::GetInstance()->PushKey(DIK_D)) {
+		return new UnitMoveCommand(unit, { 1.0f,0.0f });
+	}
+	if (Input::GetInstance()->PushKey(DIK_A)) {
+		return new UnitMoveCommand(unit, { -1.0f,0.0f });
+	}
+
+	if (Input::GetInstance()->PushKey(DIK_W)) {
+		return new UnitMoveCommand(unit, { 0.0f,-1.0f });
+	}
+	if (Input::GetInstance()->PushKey(DIK_S)) {
+		return new UnitMoveCommand(unit, { 0.0f,1.0f });
+	}
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		return new UnitMoveEndCommand(unit,player_);
+	}
+	return nullptr;
 }
 
-void Inputhandler::AssignMoveRightCommandToPressKeyD()
-{
-	this->pressKeyD_ = new MoveRightCommand();
-}
+
