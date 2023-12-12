@@ -33,11 +33,11 @@ void Particle::CreateSRV(uint32_t num)
 	srvDesc.Buffer.NumElements = kNumMaxInstance_;
 	srvDesc.Buffer.StructureByteStride = sizeof(ParticleForGPU);
 	srvHeap_->AddIndex();
-	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//direct_->GetSrvHeap()->GetGPUDescriptorHandleForHeapStart();
-	srvHeap_->SetCPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), srvHeap_->GetIndex());//srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
+	srvHeap_->SetGPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), 1);//direct_->GetSrvHeap()->GetGPUDescriptorHandleForHeapStart();
+	srvHeap_->SetCPUHandle(direct_->GetSrvHeap().Get(), srvHeap_->GetSizeSRV(), 1);//srvHandleCPU_ = textureManager_->GettextureSrvHandleCPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
 	//srvHandleGPU_ = textureManager_->GettextureSrvHandleGPU(direct_->GetSrvHeap().Get(), textureManager_->GetSizeSRV(), num);
-	index_ = srvHeap_->GetIndex();
-	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHeap_->GetCPUHandle(srvHeap_->GetIndex()));
+	index_ = 1;
+	direct_->GetDevice().Get()->CreateShaderResourceView(instancingResource_.Get(), &srvDesc, srvHeap_->GetCPUHandle(1));
 }
 ParticleData Particle::MakeNewParticle(const Emitter& emitter,std::mt19937& randomEngine)
 {

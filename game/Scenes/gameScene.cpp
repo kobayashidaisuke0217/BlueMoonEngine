@@ -52,8 +52,7 @@ void GameScene::Initialize()
 	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
 	particle_ = new Particle();
 	particle_->Initialize(10);
-	particle2_ = new Particle();
-	particle2_->Initialize(13);
+	
 	triangleIsAlive_ = false;
 	spriteIsAlive_ = true;
 	sphereIsAlive_ = false;
@@ -87,7 +86,7 @@ void GameScene::Update()
 	worldTransformtriangle_[0].UpdateMatrix();
 	worldTransformtriangle_[1].UpdateMatrix();
 	particle_->Update();
-	particle2_->Update();
+	
 	worldTransformModel_.UpdateMatrix();
 	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();

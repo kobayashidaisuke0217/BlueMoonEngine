@@ -1,5 +1,5 @@
 #include "WinApp.h"
-
+#pragma comment(lib , "winmm.lib")
 #include<string>
 LRESULT  WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -17,8 +17,8 @@ LRESULT  WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 }
 void WinApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t clientheight)
 {
-
-	wc_.lpfnWndProc =WindowProc;
+	timeBeginPeriod(1);
+	wc_.lpfnWndProc = WindowProc;
 	wc_.lpszClassName = L"CG2WINDOWClass";
 	wc_.hInstance = GetModuleHandle(nullptr);
 	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
@@ -38,7 +38,7 @@ void WinApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t
 		nullptr//オプション
 	);
 #ifdef _DEBUG
-     debugController_ = nullptr;
+	debugController_ = nullptr;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController_)))) {
 		//デバッグレイヤーを有効化する
 		debugController_->EnableDebugLayer();
@@ -47,7 +47,7 @@ void WinApp::CreateGameWindow(const wchar_t* title, int32_t clientWidth, int32_t
 	}
 #endif  
 	ShowWindow(hwnd_, SW_SHOW);
-	
+
 }
 
 WinApp* WinApp::GetInstance()
@@ -59,14 +59,14 @@ WinApp* WinApp::GetInstance()
 bool WinApp::Procesmessage() {
 	MSG msg{};
 
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		if (msg.message == WM_QUIT) // 終了メッセージが来たらループを抜ける
-		{
-			return true;
-		}
+	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	if (msg.message == WM_QUIT) // 終了メッセージが来たらループを抜ける
+	{
+		return true;
+	}
 	return false;
 }
 
