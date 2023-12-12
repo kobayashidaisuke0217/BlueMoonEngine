@@ -21,9 +21,10 @@ void Player::Init()
 	};
 	SpriteTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	mapPos_ = { 0.0f,0.0f };
-	unit_ = new Unit[5];
+
 	for (int i = 0; i < 5; i++) {
-		unit_[i].Init(i,{i+i+1.0f,i+1.0f});
+		unit_[i] = new Unit;
+		unit_[i]->Init(i,{i+i+1.0f,i+1.0f});
 	}
 }
 
@@ -31,11 +32,12 @@ void Player::Update()
 {
 	SpriteTransform.translate = { mapPos_.x * 64.0f,mapPos_.y * 64.0f,0.0f };
 	for (int i = 0; i < 5; i++) {
-		unit_[i].Update();
+		unit_[i]->Update();
 	}
 	for (int i = 0; i < 5; i++) {
-		if (unit_[i].GetSelect()) {
-			selectedUnit_ = unit_;
+		if (unit_[i]->GetSelect()) {
+			selectedUnit_ = unit_[i];
+			selectMode_ = UNIT;
 			break;
 		}
 		else {
@@ -60,7 +62,7 @@ void Player::Draw2D()
 {
 	sprite_->Draw(SpriteTransform, SpriteuvTransform, { 1.0f,1.0f,1.0f,1.0f }, texhandle_);
 	for (int i = 0; i < 5; i++) {
-		unit_[i].Draw();
+		unit_[i]->Draw();
 	}
 }
 
@@ -85,8 +87,8 @@ void Player::Move(Vector2 velo)
 void Player::SelectUnit()
 {
 	for (int i = 0; i < 5; i++) {
-		if (unit_[i].GetPos().x == mapPos_.x && unit_[i].GetPos().y == mapPos_.y) {
-			unit_[i].SetSelect();
+		if (unit_[i]->GetPos().x == mapPos_.x && unit_[i]->GetPos().y == mapPos_.y) {
+			unit_[i]->SetSelect();
 			selectMode_ = UNIT;
 			break;
 		}

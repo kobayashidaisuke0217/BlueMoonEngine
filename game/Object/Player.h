@@ -27,6 +27,7 @@ public:
 		return selectMode_;
 	}
 	Unit* GetSelectUnit() { return selectedUnit_; }
+	Unit* GetUnit(int num) { return unit_[num]; }
 private:float speed;
 	WorldTransform worldTransform_;
 	std::unique_ptr <Sphere> sphere_;
@@ -35,7 +36,7 @@ private:float speed;
 	Vector2 mapPos_;
 	Transform SpriteTransform;
 	Transform SpriteuvTransform;
-	Unit* unit_;
+	Unit* unit_[5];
 	Unit* selectedUnit_;
 	int selectMode_;
 };

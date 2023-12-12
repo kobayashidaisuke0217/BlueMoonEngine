@@ -17,6 +17,8 @@ public:
 	}
 	bool GetSelect() { return isSelected; }
 	void SetSelect() { isSelected = true; }
+	void MoveAI();
+	
 private:
 	std::unique_ptr<Sprite> sprite_;
 	uint32_t texhandle_;
@@ -25,5 +27,6 @@ private:
 	Transform SpriteuvTransform;
 	bool isSelected = false;
 	uint32_t id;
+	int count_;
 };
 

@@ -14,10 +14,12 @@ void Unit::Init(int idref, Vector2 pos)
 	};
 	SpriteTransform = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
 	mapPos_ = pos;
+	count_ = 0;
 }
 
 void Unit::Update()
 {
+	count_++;
 	SpriteTransform.translate = { mapPos_.x * 64.0f,mapPos_.y * 64.0f,0.0f };
 }
 
@@ -38,4 +40,12 @@ void Unit::MoveEnd(Player* player)
 {
 	isSelected = false;
 	
+}
+
+void Unit::MoveAI()
+{
+	if (count_ > 60) {
+		mapPos_.x += 1.0f;
+		count_ = 0;
+	}
 }

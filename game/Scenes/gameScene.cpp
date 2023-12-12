@@ -91,6 +91,11 @@ void GameScene::Update()
 	}
 	else {
 		command_ = inputhandler_->UnitHandleInput(player_->GetSelectUnit());
+		for (int i = 0; i < 5; i++) {
+			if (!player_->GetUnit(i)->GetSelect()) {
+				player_->GetUnit(i)->MoveAI();
+			}
+		}
 	}
 	if (this->command_) {
 		command_->Exec();
