@@ -49,7 +49,7 @@ void GameScene::Initialize()
 	}
 	worldTransformModel_.Initialize();
 	sprite_ = new Sprite();
-	sprite_->Initialize(  spritedataLeftTop_, spritedataRightDown_);
+	sprite_->Initialize(monsterBallResourceNum);
 	particle_ = new Particle();
 	particle_->Initialize(10);
 	
@@ -97,10 +97,10 @@ void GameScene::Update()
 	ImGui::Checkbox("par", &Isparticle);
 	ImGui::End();
 	ImGui::Begin("Scene");
-	ImGui::DragFloat3("translate", &emitter_.transform.translate.x, 0.1f);
-	ImGui::DragFloat3("scale", &emitter_.transform.scale.x, 0.1f);
+	ImGui::DragFloat3("translate", &sprite_->position.x, 0.1f);
+	ImGui::DragFloat3("scale", &sprite_->size_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &emitter_.transform.rotate.x, 0.1f);
-	ImGui::DragFloat4("color", &spriteMaterial.x, 0.1f);
+	ImGui::DragFloat2("cut", &sprite_->texLeftTop.x, 0.1f);
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
@@ -150,9 +150,9 @@ void GameScene::ApplyGlobalVariables()
 }
 
 void GameScene::Draw2D() {
-	blueMoon_->SetBlendMode(blendCount_);
+	blueMoon_->SetBlendMode(kBlendModeNormal);
 	if (spriteIsAlive_ ) {
-		sprite_->Draw(spriteTransform_, SpriteuvTransform, spriteMaterial, monsterBallResourceNum);
+		sprite_->Draw( SpriteuvTransform, spriteMaterial);
 	
 	}
 
