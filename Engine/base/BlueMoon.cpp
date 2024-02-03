@@ -120,7 +120,7 @@ void BlueMoon::CreateRootSignature3D() {
 	descriptionRootSignature.Flags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	//RootParameter作成。複数設定できるので配列。
-	D3D12_ROOT_PARAMETER rootParameters[5] = {};
+	D3D12_ROOT_PARAMETER rootParameters[6] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//pixelShaderを使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;//レジスタ番号0とバインド
@@ -147,6 +147,10 @@ void BlueMoon::CreateRootSignature3D() {
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//pixcelShaderを使う
 	rootParameters[3].Descriptor.ShaderRegister = 1;//レジスタ番号1
 
+
+	rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;//CBVを使う
+	rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//pixcelShaderを使う
+	rootParameters[5].Descriptor.ShaderRegister = 2;//レジスタ番号1
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//０～１の範囲外をリピート
@@ -197,6 +201,10 @@ void BlueMoon::CreateInputlayOut() {
 	inputElementDescs3D_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	inputElementDescs3D_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
+	inputElementDescs3D_[3].SemanticName = "CAMPOSITION";
+	inputElementDescs3D_[3].SemanticIndex = 0;
+	inputElementDescs3D_[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDescs3D_[3].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	inputLayoutDesc_.pInputElementDescs = inputElementDescs3D_;
 	inputLayoutDesc_.NumElements = _countof(inputElementDescs3D_);
 }
@@ -266,12 +274,12 @@ void BlueMoon::SettingRasterizerState3D() {
 	rasterizerDesc3DWireFrame_.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
 	//Shaderをコンパイルする
-	vertexShaderBlob3D_ = CompileShader(L"Resource/hlsl/Object3d.VS.hlsl",
+	vertexShaderBlob3D_ = CompileShader(L"Resource/hlsl/PhongShader.vs.hlsl",
 		L"vs_6_0", dxcUtils_, dxcCompiler_, includeHandler_);
 	assert(vertexShaderBlob3D_ != nullptr);
 
 
-	pixelShaderBlob3D_ = CompileShader(L"Resource/hlsl/Object3d.PS.hlsl",
+	pixelShaderBlob3D_ = CompileShader(L"Resource/hlsl/PhongShader.ps.hlsl",
 		L"ps_6_0", dxcUtils_, dxcCompiler_, includeHandler_);
 	assert(pixelShaderBlob3D_ != nullptr);
 }

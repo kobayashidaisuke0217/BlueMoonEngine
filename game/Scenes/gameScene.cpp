@@ -97,10 +97,9 @@ void GameScene::Update()
 	ImGui::Checkbox("par", &Isparticle);
 	ImGui::End();
 	ImGui::Begin("Scene");
-	ImGui::DragFloat3("translate", &sprite_->position.x, 0.1f);
-	ImGui::DragFloat3("scale", &sprite_->size_.x, 0.1f);
-	ImGui::DragFloat3("rotate", &emitter_.transform.rotate.x, 0.1f);
-	ImGui::DragFloat2("cut", &sprite_->texLeftTop.x, 0.1f);
+	ImGui::DragFloat3("translate", &worldTransformtriangle_[0].translation_.x, 0.1f);
+	ImGui::DragFloat3("scale", &worldTransformtriangle_[0].scale_.x, 0.1f);
+	ImGui::DragFloat3("rotate", &worldTransformtriangle_[0].rotation_.x, 0.1f);
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {
@@ -128,7 +127,7 @@ void GameScene::Draw()
 void GameScene::Draw3D()
 {
 	
-	//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
+	sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
 	
 	blueMoon_->PariclePreDraw();
 	particle_->Draw( viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
@@ -136,7 +135,7 @@ void GameScene::Draw3D()
 
 	blueMoon_->ModelPreDrawWireFrame();
 	
-		//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
+	//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
 	
 	
 }
@@ -152,7 +151,7 @@ void GameScene::ApplyGlobalVariables()
 void GameScene::Draw2D() {
 	blueMoon_->SetBlendMode(kBlendModeNormal);
 	if (spriteIsAlive_ ) {
-		sprite_->Draw( SpriteuvTransform, spriteMaterial);
+		//sprite_->Draw( SpriteuvTransform, spriteMaterial);
 	
 	}
 

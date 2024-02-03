@@ -23,8 +23,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;
 	VertexData* vertexData_;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> wvpResource_;
-	Transformmatrix* wvpData_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_;
+	Vector3 cameraData_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	Material* materialData_;
 	BlueMoon* engine_;

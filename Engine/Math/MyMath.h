@@ -44,6 +44,7 @@ struct Material {
 	int32_t enableLighting;
 	float padding[3];
 	Matrix4x4 uvTransform;
+	float shininess;
 };
 struct Transformmatrix {
 	Matrix4x4 WVP;
@@ -54,7 +55,10 @@ struct DirectionalLightData {
 	Vector3 direction;//ライトの向き
 	float intensity;//輝度
 };
-
+struct CameraForGPU
+{
+	Vector3 worldPos;
+};
 struct MaterialData {
 	std::string textureFilePath;
 };

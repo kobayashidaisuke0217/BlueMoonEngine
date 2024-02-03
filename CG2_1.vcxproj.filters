@@ -300,6 +300,12 @@
     <FxCompile Include="Resource\hlsl\particle.PS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resource\hlsl\PhongShader.vs.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resource\hlsl\PhongShader.ps.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\hlsl\Object3D.hlsli">
@@ -309,6 +315,9 @@
       <Filter>リソース ファイル</Filter>
     </None>
     <None Include="Resource\hlsl\Particle.hlsli">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="Resource\hlsl\PhongShader.hlsli">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>

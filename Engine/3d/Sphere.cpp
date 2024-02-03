@@ -9,7 +9,7 @@ void Sphere::Initialize()
 	kSubDivision = 32;
 	vertexCount = kSubDivision * kSubDivision * 6;
 	CreateVartexData();
-
+	TransformMatrix();
 	SetColor();
 
 }
@@ -19,18 +19,19 @@ void Sphere::Initialize()
 void Sphere::Draw(const Vector4& material, const WorldTransform& transform, uint32_t texIndex, const ViewProjection& viewProjection)
 {
 
-
+	/*BlueMoon* bluemoon_ = BlueMoon::GetInstance();
+	bluemoon_->ModelPreDrawWireFrame();*/
 	Transform uvTransform = { { 1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f}, {0.0f,0.0f,0.0f} };
 
 	Matrix4x4 uvtransformMtrix = MakeScaleMatrix(uvTransform.scale);
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeRotateZMatrix(uvTransform.rotate.z));
 	uvtransformMtrix = Multiply(uvtransformMtrix, MakeTranslateMatrix(uvTransform.translate));
 
+	cameraData_ = viewProjection.translation_;
 
-
-	*materialData_ = { material,true };
+	*materialData_ = { material,2 };
 	materialData_->uvTransform = uvtransformMtrix;
-
+	materialData_->shininess = 0.5f;
 
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	//形状を設定。PS0にせっていしているものとはまた別。同じものを設定すると考えておけばいい
@@ -45,6 +46,8 @@ void Sphere::Draw(const Vector4& material, const WorldTransform& transform, uint
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLight_->GetResource()->GetGPUVirtualAddress());
 	//texture
 	dxCommon_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureManager_->GetGPUHandle(texIndex));
+	//カメラの座標
+	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(5, cameraResource_->GetGPUVirtualAddress());	
 	//Draw
 	dxCommon_->GetCommandList()->DrawInstanced(vertexCount, 1, 0, 0);
 
@@ -130,9 +133,8 @@ void Sphere::CreateVartexData()
 
 void Sphere::TransformMatrix()
 {
-	wvpResource_ = DirectXCommon::CreateBufferResource(dxCommon_->GetDevice().Get(), sizeof(Transformmatrix));
-	wvpResource_->Map(0, NULL, reinterpret_cast<void**>(&wvpData_));
-	wvpData_->WVP = MakeIdentity4x4();
+	cameraResource_ = DirectXCommon::CreateBufferResource(dxCommon_->GetDevice().Get(), sizeof(Vector3));
+	cameraResource_->Map(0, NULL, reinterpret_cast<void**>(&cameraData_));
 }
 
 void Sphere::SetColor() {

@@ -1,4 +1,5 @@
 #include "DirectionalLight.h"
+#include "ImguiManger.h"
 DirectionalLight* DirectionalLight::GetInstance()
 {
 	static DirectionalLight instance;
@@ -17,5 +18,8 @@ void DirectionalLight::Initialize()
 
 void DirectionalLight::Update()
 {
+	ImGui::Begin("Light");
+	ImGui::DragFloat3("Direction", &directionalLightData->direction.x, 0.1f);
+	ImGui::End();
 	directionalLightData->direction = Normalise(directionalLightData->direction);
 }

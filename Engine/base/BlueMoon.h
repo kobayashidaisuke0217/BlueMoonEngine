@@ -68,6 +68,8 @@ private:
 	IDxcBlob* vertexShaderBlob3D_;
 	IDxcBlob* pixelShaderBlob3D_;
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState3D_;
+	D3D12_RASTERIZER_DESC rasterizerDesc3D_{};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs3D_[4];
 	//3Dパイプラインワイヤーフレーム
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState3DWireFrame_;
 	//2Dパイプライン
@@ -80,11 +82,11 @@ private:
 D3D12_RASTERIZER_DESC rasterizerDesc2D_{};
 D3D12_INPUT_ELEMENT_DESC inputElementDescs2D_[2];
 D3D12_INPUT_LAYOUT_DESC inputLayoutDesc2D_{};
-D3D12_RASTERIZER_DESC rasterizerDesc3D_{};
+
 D3D12_RASTERIZER_DESC rasterizerDesc3DWireFrame_{};
 	D3D12_VIEWPORT viewport_{};
 	D3D12_RECT scissorRect_{};
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs3D_[3];
+	
 
 	//Particle用のパイプライン
 	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlobParticle_;
@@ -95,6 +97,8 @@ D3D12_RASTERIZER_DESC rasterizerDesc3DWireFrame_{};
 	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineStateParticle_;
 	D3D12_RASTERIZER_DESC rasterizerDescParticle_{};
 	D3D12_INPUT_ELEMENT_DESC inputElementDescsParticle_[3];
+
+
 
 	//頂点リソースにデータを書き込む
 	Vector4* vertexData_;
