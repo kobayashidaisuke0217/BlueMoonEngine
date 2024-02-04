@@ -31,7 +31,7 @@ void Sphere::Draw(const Vector4& material, const WorldTransform& transform, uint
 
 	*materialData_ = { material,2 };
 	materialData_->uvTransform = uvtransformMtrix;
-	materialData_->shininess = 50.0f;
+	materialData_->shininess = 100.0f;
 
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 	//形状を設定。PS0にせっていしているものとはまた別。同じものを設定すると考えておけばいい
