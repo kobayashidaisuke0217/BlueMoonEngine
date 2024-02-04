@@ -9,6 +9,7 @@ VertexShaderOutput main(VertexShaderInput input) {
 	output.texcoord = input.texcoord;
 	output.normal = normalize(mul(input.normal, (float32_t3x3)WorldViewProjection));
 	output.worldPos = mul(input.position, gTransformationMatrix.matWorld).xyz;
+	output.cameraPos = gViewProjectionMatrix.camera;
 	return output;
 
 }
