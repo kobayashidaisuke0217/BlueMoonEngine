@@ -1,5 +1,5 @@
 #include "gameScene.h"
-
+#include"Input.h"
 
 GameScene::~GameScene()
 {
@@ -50,6 +50,8 @@ void GameScene::Initialize()
 	worldTransformModel_.Initialize();
 	sprite_ = new Sprite();
 	sprite_->Initialize(uvResourceNum,{120.0f,64.0f});
+	sprite_->position = { 400.0f,180.0f };
+	sprite_->size_ = { 69.0f,56.0f };
 	particle_ = new Particle();
 	particle_->Initialize(10);
 	
@@ -94,19 +96,24 @@ void GameScene::Update()
 	ImGui::DragFloat3("translate", &viewProjection_.translation_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &viewProjection_.rotation_.x, 0.1f);
 	ImGui::DragInt("parcount", &particleCo);
-	ImGui::Checkbox("par", &Isparticle);
+	ImGui::Checkbox("IsParticle", &Isparticle);
 	ImGui::End();
 	ImGui::Begin("Scene");
+	ImGui::InputInt("SceneNum", &sceneNum);
+	if (sceneNum > 1) {
+		sceneNum = 1;
+	}
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		sceneNum = TITLE_SCENE;
+	
+	}
+	ImGui::End();
+	ImGui::Begin("Sprite");
 	ImGui::DragFloat3("translate", &sprite_->position.x, 0.1f);
 	ImGui::DragFloat3("scale", &sprite_->size_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &emitter_.transform.rotate.x, 0.1f);
 	ImGui::DragFloat2("cut", &sprite_->texLeftTop.x, 0.1f);
 	ImGui::DragFloat2("size", &sprite_->textureSize.x, 0.1f);
-	ImGui::InputInt("blendCount", &blendCount_);
-	ImGui::InputInt("SceneNum", &sceneNum);
-	if (sceneNum > 1) {
-		sceneNum = 1;
-	}
 	ImGui::End();
 	if (Isparticle) {
 		particle_->AddParticle(emitter_, particleCo);
@@ -129,15 +136,13 @@ void GameScene::Draw()
 void GameScene::Draw3D()
 {
 	
-	//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[1], monsterBallResourceNum, viewProjection_);
+
 	
 	blueMoon_->PariclePreDraw();
 	particle_->Draw( viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
-	//particle2_->Draw(worldTransformtriangle_[1].GetTransform(), viewProjection_, { 1.0f,1.0f,1.0f,1.0f }, BlackResourceNum);
-
+	
 	blueMoon_->ModelPreDrawWireFrame();
 	
-		//sphere_->Draw(sphereMaterial_, worldTransformtriangle_[0], monsterBallResourceNum, viewProjection_);
 	
 	
 }
@@ -147,7 +152,7 @@ void GameScene::ApplyGlobalVariables()
 	GlovalVariables* globalVariables = GlovalVariables::GetInstance();
 
 	const char* groupName = "Player";
-	//worldTransformtriangle_[0].translation_ = globalVariables->GetVector3Value(groupName, "Translation");
+
 }
 
 void GameScene::Draw2D() {

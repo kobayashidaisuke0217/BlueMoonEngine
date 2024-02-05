@@ -73,7 +73,7 @@ void Sprite::Draw( const Transform& uvTransform, const Vector4& material)
 		vertexData_[1].texcoord = { tex_left, tex_top };
 		vertexData_[2].texcoord = { tex_right, tex_bottom };
 		vertexData_[3].texcoord = { tex_right, tex_top };
-	Matrix4x4 worldMatrix = MakeAffineMatrix({size_.x/3.14f,size_.y/3.14f,1.0f}, {0.0f,0.0f,rotation}, {position.x,position.y,0.0f});
+	Matrix4x4 worldMatrix = MakeAffineMatrix({size_.x/10.0f,size_.y/10.0f,1.0f}, {0.0f,0.0f,rotation}, {position.x,position.y,0.0f});
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
 	Matrix4x4 projectionmatrix = MakeOrthographicMatrix(0.0f, 0.0f, (float)dxCommon_->GetWin()->kClientWidth, (float)dxCommon_->GetWin()->kClientHeight, 0.0f, 100.0f);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionmatrix));
