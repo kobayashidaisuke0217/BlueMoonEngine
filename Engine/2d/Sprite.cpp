@@ -1,19 +1,21 @@
 #include "Sprite.h"
 
-void Sprite::Initialize(uint32_t texindex = UINT32_MAX)
+void Sprite::Initialize(uint32_t texindex = UINT32_MAX,Vector2 size={120.0f,64.0f})
 {
 	texindex_ = texindex;
 	dxCommon_ = DirectXCommon::GetInstance();
 	engine_ = BlueMoon::GetInstance();
 	textureManager_ = Texturemanager::GetInstance();
-	CreateVartexData();
-	SetColor();
-	CreateTransform();
 	if (texindex != UINT32_MAX) {
 		texindex_ = texindex;
 		AdjustTextureSize();
-		size_ =  textureSize;
+		size_ = size;
+		
 	}
+	CreateVartexData();
+	SetColor();
+	CreateTransform();
+	
 	ID3D12Resource* textureBuffer = textureManager_->GetTextureResource(texindex_).Get();
 
 	// 指定番号の画像が読み込み済みなら
@@ -46,9 +48,9 @@ void Sprite::SetColor() {
 void Sprite::Draw( const Transform& uvTransform, const Vector4& material)
 {
 
-	AdjustTextureSize();
+	//AdjustTextureSize();
 
-	float left = (0.0f - anchorPoint_.x) * size_.x;
+	float left = (0.0f - anchorPoint_.x) * size_.x ;
 	float right = (1.0f - anchorPoint_.x) * size_.x;
 	float top = (0.0f - anchorPoint_.y) * size_.y;
 	float bottom = (1.0f - anchorPoint_.y) * size_.y;
@@ -71,7 +73,7 @@ void Sprite::Draw( const Transform& uvTransform, const Vector4& material)
 		vertexData_[1].texcoord = { tex_left, tex_top };
 		vertexData_[2].texcoord = { tex_right, tex_bottom };
 		vertexData_[3].texcoord = { tex_right, tex_top };
-	Matrix4x4 worldMatrix = MakeAffineMatrix({size_.x,size_.y,1.0f}, {0.0f,0.0f,rotation}, {position.x,position.y,0.0f});
+	Matrix4x4 worldMatrix = MakeAffineMatrix({size_.x/3.14f,size_.y/3.14f,1.0f}, {0.0f,0.0f,rotation}, {position.x,position.y,0.0f});
 	Matrix4x4 viewMatrix = MakeIdentity4x4();
 	Matrix4x4 projectionmatrix = MakeOrthographicMatrix(0.0f, 0.0f, (float)dxCommon_->GetWin()->kClientWidth, (float)dxCommon_->GetWin()->kClientHeight, 0.0f, 100.0f);
 	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionmatrix));

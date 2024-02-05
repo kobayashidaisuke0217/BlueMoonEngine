@@ -49,7 +49,7 @@ void GameScene::Initialize()
 	}
 	worldTransformModel_.Initialize();
 	sprite_ = new Sprite();
-	sprite_->Initialize(monsterBallResourceNum);
+	sprite_->Initialize(uvResourceNum,{120.0f,64.0f});
 	particle_ = new Particle();
 	particle_->Initialize(10);
 	
@@ -101,6 +101,7 @@ void GameScene::Update()
 	ImGui::DragFloat3("scale", &sprite_->size_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &emitter_.transform.rotate.x, 0.1f);
 	ImGui::DragFloat2("cut", &sprite_->texLeftTop.x, 0.1f);
+	ImGui::DragFloat2("size", &sprite_->textureSize.x, 0.1f);
 	ImGui::InputInt("blendCount", &blendCount_);
 	ImGui::InputInt("SceneNum", &sceneNum);
 	if (sceneNum > 1) {

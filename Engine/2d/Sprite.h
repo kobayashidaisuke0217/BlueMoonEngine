@@ -8,7 +8,7 @@
 class Sprite
 {
 public:
-	void Initialize(uint32_t texindex);
+	void Initialize(uint32_t texindex, Vector2 size);
 
 
 	void Draw( const Transform& uvTransform, const  Vector4& material);
