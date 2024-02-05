@@ -96,15 +96,10 @@ void GameScene::Update()
 	ImGui::DragInt("parcount", &particleCo);
 	ImGui::Checkbox("par", &Isparticle);
 	ImGui::End();
-	ImGui::Begin("Scene");
+	ImGui::Begin("object");
 	ImGui::DragFloat3("translate", &worldTransformtriangle_[0].translation_.x, 0.1f);
 	ImGui::DragFloat3("scale", &worldTransformtriangle_[0].scale_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &worldTransformtriangle_[0].rotation_.x, 0.1f);
-	ImGui::InputInt("blendCount", &blendCount_);
-	ImGui::InputInt("SceneNum", &sceneNum);
-	if (sceneNum > 1) {
-		sceneNum = 1;
-	}
 	ImGui::End();
 	if (Isparticle) {
 		particle_->AddParticle(emitter_, particleCo);

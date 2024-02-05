@@ -1,6 +1,6 @@
 #pragma once
 enum  Scene {
-	TITLE_SCENE,
+	//TITLE_SCENE,
 	GAME_SCENE,
 };
 class Iscene
