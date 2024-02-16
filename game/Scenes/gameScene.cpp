@@ -110,8 +110,8 @@ void GameScene::Update()
 	ImGui::End();
 	ImGui::Begin("Sprite");
 	ImGui::DragFloat3("translate", &sprite_->position.x, 0.1f);
-	ImGui::DragFloat3("scale", &sprite_->size_.x, 0.1f);
-	ImGui::DragFloat3("rotate", &emitter_.transform.rotate.x, 0.1f);
+	ImGui::DragFloat2("scale", &sprite_->size_.x, 0.1f);
+	ImGui::DragFloat("rotate", &sprite_->rotation, 0.1f);
 	ImGui::DragFloat2("cut", &sprite_->texLeftTop.x, 0.1f);
 	ImGui::DragFloat2("size", &sprite_->textureSize.x, 0.1f);
 	ImGui::End();
