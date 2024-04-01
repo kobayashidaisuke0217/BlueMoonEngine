@@ -58,8 +58,10 @@ void TitleScene::Draw()
 {
 	blueMoon_->ModelPreDrawWireFrame();
 	model_->Draw(worldTransformModel_[0], viewProjection_);
+	
 	blueMoon_->ModelPreDraw();
 	model_->Draw(worldTransformModel_[1], viewProjection_);
+	model_->OutLineDraw(worldTransformModel_[1], viewProjection_);
 }
 
 void TitleScene::Finalize()

@@ -10,8 +10,10 @@ void WorldTransform::Initialize()
 
 void WorldTransform::CreateConstBuffer()
 {
-	constBuff_ = DirectXCommon::GetInstance()->CreateBufferResource(DirectXCommon::GetInstance()->GetDevice().Get(), sizeof(ConstBufferDataWorldTransform));
+	if (!constBuff_) {
+		constBuff_ = DirectXCommon::GetInstance()->CreateBufferResource(DirectXCommon::GetInstance()->GetDevice().Get(), sizeof(ConstBufferDataWorldTransform));
 
+	}
 }
 
 void WorldTransform::Map()
@@ -23,6 +25,8 @@ void WorldTransform::Map()
 void WorldTransform::TransferMatrix()
 {
 	constMap->matWorld = matWorld_;
+
+	constMap->WorldInverceTranspose = Transpose(Inverse(matWorld_));
 }
 
 void WorldTransform::UpdateMatrix()

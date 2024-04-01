@@ -81,7 +81,7 @@ void GameScene::Initialize()
 
 void GameScene::Update()
 {
-	bool Isparticle = false;
+	/*bool Isparticle = false;
 	
 	
 	
@@ -118,7 +118,7 @@ void GameScene::Update()
 	if (Isparticle) {
 		particle_->AddParticle(emitter_, particleCo);
 	}
-	Isparticle = false;
+	Isparticle = false;*/
 }
 
 
@@ -136,7 +136,8 @@ void GameScene::Draw()
 void GameScene::Draw3D()
 {
 	
-
+	model_[0]->Draw(worldTransformModel_, viewProjection_);
+	model_[0]->OutLineDraw(worldTransformModel_, viewProjection_);
 	
 	blueMoon_->PariclePreDraw();
 	particle_->Draw( viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);

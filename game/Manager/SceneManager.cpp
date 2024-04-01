@@ -42,14 +42,14 @@ void SceneManager::Run() {
 		sceneArr_[sceneNum_]->Draw();
 
 
-#ifdef DEBUG
+//#ifdef DEBUG
 
 
 
 		imguiManager_->End();
 
 		imguiManager_->Draw();
-#endif // _Release
+//#endif // _Release
 #ifdef USE_IMGUI
 
 

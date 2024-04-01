@@ -3,6 +3,7 @@
 #include"MyMath.h"
 struct ConstBufferDataWorldTransform {
 	Matrix4x4 matWorld; // ローカル → ワールド変換行列
+	Matrix4x4 WorldInverceTranspose;
 };
 struct WorldTransform {
 	// 定数バッファ
@@ -40,7 +41,11 @@ struct WorldTransform {
 	void UpdateMatrix();
 
 	Vector3 GetWorldPos();
-	Transform GetTransform() {
-		return{ scale_,rotation_,translation_ };
-	}
+	Transform GetTransform() { return { scale_,rotation_,translation_ }; }
+	~WorldTransform() {
+		if (constBuff_) {
+			constBuff_->Release();
+			constBuff_.Reset();
+		}
+	};
 };
