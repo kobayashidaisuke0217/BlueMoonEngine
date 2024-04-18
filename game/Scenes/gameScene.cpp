@@ -81,7 +81,8 @@ void GameScene::Initialize()
 
 void GameScene::Update()
 {
-	/*bool Isparticle = false;
+	
+	bool Isparticle = false;
 	
 	
 	
@@ -118,7 +119,10 @@ void GameScene::Update()
 	if (Isparticle) {
 		particle_->AddParticle(emitter_, particleCo);
 	}
-	Isparticle = false;*/
+	Isparticle = false;
+	ImGui::Begin("scene");
+	ImGui::InputInt("aa", &sceneNum);
+	ImGui::End();
 }
 
 
