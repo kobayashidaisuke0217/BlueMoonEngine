@@ -74,9 +74,15 @@ struct ParticleForGPU {
 	Matrix4x4 World;
 	Vector4 Color;
 };
+struct Node {
+	Matrix4x4 localMat;
+	std::string name;
+	std::vector<Node> children;
+};
 struct ModelData {
 	std::vector<VertexData> vertices;
 	MaterialData material;
+	Node rootNode;
 };
 struct AABB {
 	Vector3 min;

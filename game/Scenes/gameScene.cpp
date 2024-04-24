@@ -36,7 +36,7 @@ void GameScene::Initialize()
 	sphere_ = new Sphere();
 	sphere_->Initialize();
 
-	model_[0] = Model::CreateModelFromObj("Resource", "fence.obj");
+	model_[0] = Model::CreateModelFromObj("Resource", "plane.gltf");
 	model_[1] = new Model();
 	model_[1]->Initialize("Resource", "plane.obj");
 	for (int i = 0; i < 2; i++) {
@@ -121,7 +121,9 @@ void GameScene::Update()
 	}
 	Isparticle = false;
 	ImGui::Begin("scene");
-	ImGui::InputInt("aa", &sceneNum);
+	ImGui::DragFloat3("sc", &worldTransformModel_.scale_.x, 0.1f);
+	ImGui::DragFloat3("ro", &worldTransformModel_.rotation_.x, 0.1f);
+	ImGui::DragFloat3("tr", &worldTransformModel_.translation_.x, 0.1f);
 	ImGui::End();
 }
 
@@ -141,7 +143,7 @@ void GameScene::Draw3D()
 {
 	
 	model_[0]->Draw(worldTransformModel_, viewProjection_);
-	model_[0]->OutLineDraw(worldTransformModel_, viewProjection_);
+	//model_[0]->OutLineDraw(worldTransformModel_, viewProjection_);
 	
 	blueMoon_->PariclePreDraw();
 	particle_->Draw( viewProjection_, {1.0f,1.0f,1.0f,1.0f}, BlackResourceNum);
@@ -163,7 +165,7 @@ void GameScene::ApplyGlobalVariables()
 void GameScene::Draw2D() {
 	blueMoon_->SetBlendMode(kBlendModeNormal);
 	if (spriteIsAlive_ ) {
-		sprite_->Draw( SpriteuvTransform, spriteMaterial);
+	//	sprite_->Draw( SpriteuvTransform, spriteMaterial);
 	
 	}
 

@@ -15,6 +15,7 @@
 class Model
 {
 public:
+	
 	struct OutLineData {
 		Vector4 color;
 		Matrix4x4 scale;
@@ -26,12 +27,12 @@ public:
 
 	static Model* CreateModelFromObj(const std::string& directoryPath, const std::string& filename);
 	ModelData modelData_;
-	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+	ModelData LoadModelFile(const std::string& directoryPath, const std::string& filename);
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 	void SetColor(Vector4 col) { color = col; }
 	void SetOutLineColor(const Vector4& color) { outlineData_->color = color; };
 	void SetOutLineWidth(const Vector3& wid) { outlineData_->scale = MakeScaleMatrix(wid); };
-
+	Node ReadNode(aiNode* node);
 	void setIsLighting(bool flag) { material_->enableLighting = flag; }
 private:
 	Texturemanager* textureManager_;
