@@ -15,7 +15,7 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "Winmm.lib")
-
+#include "../Math/MyMath.h"
 class DirectXCommon
 {
 public:
@@ -94,7 +94,8 @@ private:
 
 	std::chrono::steady_clock::time_point reference_;
 private:
-
+	Microsoft::WRL::ComPtr<ID3D12Resource>
+		CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device>device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor);
 	
 	void InitializeDXGIDevice();
 	void CreateSwapChain();

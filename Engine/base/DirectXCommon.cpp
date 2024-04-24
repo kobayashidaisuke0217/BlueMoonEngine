@@ -34,14 +34,62 @@ void DirectXCommon::Initialize(WinApp* win, int32_t backBufferWidth, int32_t bac
 
 	// スワップチェーンの生成
 	CreateSwapChain();
+
+	//SRVの作成
 	CreateSrvheap();
 	// レンダーターゲット生成
 	CreateFinalRenderTargets();
+	const Vector4 kRenderaTargetClearValue = { 1.0f,0.0f,0.0f,1.0f };
+
+	auto renderTextureResource = CreateRenderTextureResource(device_, winApp_->kClientWidth, 720, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderaTargetClearValue);
+	D3D12_SHADER_RESOURCE_VIEW_DESC renderRextureSrvDesc{};
+	renderRextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	renderRextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	renderRextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	renderRextureSrvDesc.Texture2D.MipLevels = 1;
+	device_->CreateShaderResourceView(renderTextureResource.Get(), &renderRextureSrvDesc, srvDescriptorHeap_.Get()->GetCPUDescriptorHandleForHeapStart());
 
 	CreateDepthStensil();
 	// フェンス生成
 	CreateFence();
 
+}
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor)
+{
+	//頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	//VRAM上に作成
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+	//頂点リソースの設定
+	D3D12_RESOURCE_DESC ResourceDesc{};
+	//バッファリソース。テクスチャの場合はまた別の設定をする
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ResourceDesc.Width = width;//リソースサイズ
+	//バッファの場合はこれらは１にする決まり
+	ResourceDesc.Height = height;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.SampleDesc.Count = 1;
+	//バッファの場合はこれにする決まり
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//RenderTargetとして利用可能にする
+	ResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+	HRESULT hr;
+	ID3D12Resource* Resource = nullptr;
+	D3D12_CLEAR_VALUE clearValue;
+	clearValue.Format = format;
+	clearValue.Color[0] = clearColor.x;
+	clearValue.Color[1] = clearColor.y;
+	clearValue.Color[2] = clearColor.z;
+	clearValue.Color[3] = clearColor.w;
+	//	ID3D12Resource* Resource = nullptr;
+	//実際に頂点リソースを作る
+	hr = device->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
+		&ResourceDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, &clearValue,
+		IID_PPV_ARGS(&Resource));
+	assert(SUCCEEDED(hr));
+
+	return Resource;
 }
 //デバイスの作成
 void DirectXCommon::InitializeDXGIDevice() {
