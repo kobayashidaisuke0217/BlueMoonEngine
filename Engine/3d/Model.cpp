@@ -27,7 +27,7 @@ void Model::Draw(const WorldTransform& transform, const ViewProjection& viewProj
     uvtransformMtrix = Multiply(uvtransformMtrix, MakeRotateZMatrix(uvTransform.rotate.z));
     uvtransformMtrix = Multiply(uvtransformMtrix, MakeTranslateMatrix(uvTransform.translate));
     //transform.matWorld_ = Multiply(modelData_.rootNode.localMat, transform.matWorld_);
-
+    
     *material_ = { color,material_->enableLighting };
     material_->uvTransform = uvtransformMtrix;
 
