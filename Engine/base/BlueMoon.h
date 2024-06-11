@@ -30,6 +30,10 @@ public:
 	void variableInitialize();
 	void Initialize(int32_t width, int32_t height);
 	void BeginFrame();
+	void RenderTextureDraw();
+	void CopyPreDraw();
+	void CopyPostDraw();
+	void CopyDraw();
 	void EndFrame();
 	void Finalize();
 	/*void Update();
@@ -107,7 +111,16 @@ D3D12_RASTERIZER_DESC rasterizerDesc3DWireFrame_{};
 	D3D12_RASTERIZER_DESC rasterizerDescOutLine_{};
 	D3D12_INPUT_ELEMENT_DESC inputElementDescsOutLine_[3];
 
-
+	//CopyImage用
+	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlobCopyImage_;
+	Microsoft::WRL::ComPtr<ID3DBlob>errorBlobCopyImage_;
+	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignatureCopyImage_;
+	IDxcBlob* vertexShaderBlobCopyImage_;
+	IDxcBlob* pixelShaderBlobCopyImage_;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineStateCopyImage_;
+	D3D12_RASTERIZER_DESC rasterizerDescCopyImage_{};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescsCopyImage_;
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDescCopyImage_;
 	//頂点リソースにデータを書き込む
 	Vector4* vertexData_;
 	int PSO2DCount_;
@@ -149,6 +162,12 @@ D3D12_RASTERIZER_DESC rasterizerDesc3DWireFrame_{};
 	void SettingRasterizerStateOutLine();
 	void InitializePSOOutLine();
 	void CreateInputlayOutOutLine();
+
+
+	void CreateRootSignatureCopyImage();
+	void SettingRasterizerStateCopyImage();
+	void InitializePSOCopyImage();
+	void CreateInputlayOutCopyImage();
 };
 
 

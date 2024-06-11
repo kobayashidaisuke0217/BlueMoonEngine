@@ -28,6 +28,7 @@ public:
 	void PreDraw();
 	void PostDraw();
 	void ClearRenderTarget();
+	void RendeerTargetDraw();
 	void Finalize();
 	HRESULT GetHr() { return  hr_; }
 	void SetHr(HRESULT a) { this->hr_ = a; }
@@ -45,8 +46,9 @@ public:
 	
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetDsvHeap() { return dsvDescriptorHeap_; }
 	D3D12_RENDER_TARGET_VIEW_DESC getRtvDesc() { return rtvDesc; }
-
-
+	ID3D12Resource* GetRndertextureResource() {return renderTextureResource.Get(); }
+	void CopyPreDraw();
+	void CopyPostDraw();
 private:
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_;
@@ -79,17 +81,20 @@ private:
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
 	
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvTextureHandles_[2];
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> backBuffers_[2];
 	UINT64 fenceVal_;
 	int32_t backBufferWidth_;
 	int32_t backBufferHeight_;
 	D3D12_RESOURCE_BARRIER barrier_{};
+	D3D12_RESOURCE_BARRIER coppyBarrier_{};
 	//初期値０でFenceを作る
 	
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_;
 	HANDLE fenceEvent_;
 	HRESULT hr_;
-	
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	Microsoft::WRL::ComPtr<ID3D12Resource>  depthStencilResource;
 
 	std::chrono::steady_clock::time_point reference_;

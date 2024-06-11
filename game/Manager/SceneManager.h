@@ -7,6 +7,7 @@
 #include "GlobalVariables.h"
 #include "ImGuiManger.h"
 #include"DirectionalLight.h"
+#include "../../Engine/base/CopyRender.h"
 #pragma endregion
 #pragma region シーン
 #include <game/Scenes/Iscene.h>
@@ -38,6 +39,6 @@ private:
 	DirectionalLight* directionallight_;
 	int sceneNum_;
 	int preSceneNum_;
-
+	CopyRender* copyRnder_;
 };
 

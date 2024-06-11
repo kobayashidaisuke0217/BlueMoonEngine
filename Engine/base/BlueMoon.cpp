@@ -33,6 +33,13 @@ void BlueMoon::Initialize(int32_t width, int32_t height) {
 	CreateInputlayOutOutLine();
 	SettingRasterizerStateOutLine();
 	InitializePSOOutLine();
+
+
+	CreateRootSignatureCopyImage();
+	CreateInputlayOutCopyImage();
+	SettingRasterizerStateCopyImage();
+	InitializePSOCopyImage();
+
 	SettingViePort();
 
 	SettingScissor();
@@ -389,6 +396,26 @@ void BlueMoon::BeginFrame() {
 	//direct_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 	//direct_->GetCommandList()->SetPipelineState(graphicsPipelineState_.Get());//PS0を設定
 
+}
+void BlueMoon::RenderTextureDraw()
+{
+	direct_->GetCommandList()->RSSetViewports(1, &viewport_);//viewportを設定
+	direct_->GetCommandList()->RSSetScissorRects(1, &scissorRect_);//scirssorを設定
+	direct_->RendeerTargetDraw();
+}
+void BlueMoon::CopyPreDraw()
+{
+	direct_->CopyPreDraw();
+	direct_->GetCommandList()->SetGraphicsRootSignature(rootSignatureCopyImage_.Get());
+	direct_->GetCommandList()->SetPipelineState(graphicsPipelineStateCopyImage_.Get());//PS0を設定
+	
+}
+void BlueMoon::CopyPostDraw()
+{
+	direct_->CopyPostDraw();
+}
+void BlueMoon::CopyDraw()
+{
 }
 void BlueMoon::EndFrame() {
 
@@ -866,5 +893,108 @@ void BlueMoon::CreateInputlayOutOutLine()
 
 	inputLayoutDescOutLine_.pInputElementDescs = inputElementDescsOutLine_;
 	inputLayoutDescOutLine_.NumElements = _countof(inputElementDescsOutLine_);
+}
+void BlueMoon::CreateRootSignatureCopyImage()
+{
+	//RootSignature作成
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	descriptionRootSignature.Flags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	D3D12_DESCRIPTOR_RANGE descriptoraRange[1] = {};
+	descriptoraRange[0].BaseShaderRegister = 0;
+	descriptoraRange[0].NumDescriptors = 1;
+	descriptoraRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;//SRVを使用
+	descriptoraRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;//Offsetを自動計算
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;//Descriptortableを使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;//PixcelShaderを使う
+	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptoraRange;//tableの中身の配列を指定
+	rootParameters[0].DescriptorTable.NumDescriptorRanges = _countof(descriptoraRange);
+
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;//バイリニアフィルタ
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;//０～１の範囲外をリピート
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;//比較しない
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;//ありったけのmipmapを使う
+	staticSamplers[0].ShaderRegister = 0;
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+
+	descriptionRootSignature.pParameters = rootParameters;//ルートパラメータ配列へのポインタ
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+	descriptionRootSignature.pStaticSamplers = staticSamplers;
+	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
+	//シリアライズしてバイナリにする
+
+	HRESULT hr;
+	hr = D3D12SerializeRootSignature(&descriptionRootSignature,
+		D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlobOutLine_, &errorBlobOutLine_);
+	if (FAILED(direct_->GetHr())) {
+		Log(reinterpret_cast<char*>(errorBlobOutLine_->GetBufferPointer()));
+		assert(false);
+	}
+	//バイナリを元に生成
+
+	hr = direct_->GetDevice()->CreateRootSignature(0, signatureBlobOutLine_->GetBufferPointer(),
+		signatureBlobOutLine_->GetBufferSize(), IID_PPV_ARGS(&rootSignatureCopyImage_));
+	assert(SUCCEEDED(hr));
+}
+void BlueMoon::SettingRasterizerStateCopyImage()
+{
+	//裏面（時計回り）を表示しない
+	rasterizerDescCopyImage_.CullMode = D3D12_CULL_MODE_BACK;
+	//三角形の中を塗りつぶす
+	rasterizerDescCopyImage_.FillMode = D3D12_FILL_MODE_SOLID;
+
+	//Shaderをコンパイルする
+	vertexShaderBlobCopyImage_ = CompileShader(L"Resource/hlsl/CopyImage.VS.hlsl",
+		L"vs_6_0", dxcUtils_, dxcCompiler_, includeHandler_);
+	assert(vertexShaderBlobCopyImage_ != nullptr);
+
+
+	pixelShaderBlobCopyImage_ = CompileShader(L"Resource/hlsl/CopyImage.PS.hlsl",
+		L"ps_6_0", dxcUtils_, dxcCompiler_, includeHandler_);
+	assert(pixelShaderBlobCopyImage_ != nullptr);
+}
+void BlueMoon::InitializePSOCopyImage()
+{
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+	graphicsPipelineStateDesc.pRootSignature = rootSignatureCopyImage_.Get();//RootSignature
+	graphicsPipelineStateDesc.InputLayout = inputLayoutDescCopyImage_;//Inputlayout
+	graphicsPipelineStateDesc.VS = { vertexShaderBlobCopyImage_->GetBufferPointer(),
+		vertexShaderBlobCopyImage_->GetBufferSize() };//vertexShader
+	graphicsPipelineStateDesc.PS = { pixelShaderBlobCopyImage_->GetBufferPointer(),
+		pixelShaderBlobCopyImage_->GetBufferSize() };//pixcelShader
+	graphicsPipelineStateDesc.BlendState = blendDesc_[kBlendModeNormal];//BlendState
+	graphicsPipelineStateDesc.RasterizerState = rasterizerDescCopyImage_;//rasterizerState
+	//書き込むRTVの情報
+	graphicsPipelineStateDesc.NumRenderTargets = 1;
+	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	//利用するトポロジ（形状）のタイプ。三角形
+	graphicsPipelineStateDesc.PrimitiveTopologyType =
+		D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	//どのように画面に色を打ち込むのかの設定（気にしなく良い）
+	graphicsPipelineStateDesc.SampleDesc.Count = 1;
+	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+	//DepthStencilStateの設定
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
+	depthStencilDesc_.DepthEnable = false;
+	depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc_;
+	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//実際に生成
+	//graphicsPipelineStateCopyImage_ = nullptr;
+	HRESULT hr = direct_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc,
+		IID_PPV_ARGS(&graphicsPipelineStateCopyImage_));
+	assert(SUCCEEDED(hr));
+}
+void BlueMoon::CreateInputlayOutCopyImage()
+{
+	inputLayoutDescCopyImage_.pInputElementDescs = nullptr;
+	inputLayoutDescCopyImage_.NumElements = 0;
 }
 #pragma endregion

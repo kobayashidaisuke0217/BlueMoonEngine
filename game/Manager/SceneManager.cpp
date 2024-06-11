@@ -24,7 +24,11 @@ void SceneManager::Run() {
 		input->Update();
 		glovalVariables_->Update();
 		directionallight_->Update();
-		blueMoon_->BeginFrame();
+		blueMoon_->RenderTextureDraw();
+		//blueMoon_->CopyPreDraw();
+		//copyRnder_->Draw();
+		//blueMoon_->CopyPostDraw();
+		//blueMoon_->BeginFrame();
 
 		preSceneNum_ = sceneNum_;
 		sceneNum_ = sceneArr_[sceneNum_]->GetSceneNum();
@@ -40,8 +44,8 @@ void SceneManager::Run() {
 		}
 
 		sceneArr_[sceneNum_]->Draw();
-
-
+		
+		blueMoon_->BeginFrame();
 //#ifdef DEBUG
 
 
@@ -82,6 +86,8 @@ void SceneManager::Initialize()
 	glovalVariables_->LoadFiles();
 	directionallight_ = DirectionalLight::GetInstance();
 	directionallight_->Initialize();
+	copyRnder_ = new CopyRender();
+	copyRnder_->Init();
 	sceneArr_[TITLE_SCENE] = std::make_unique <TitleScene>();
 	sceneArr_[GAME_SCENE] = std::make_unique <GameScene>();
 	sceneNum_ = TITLE_SCENE;

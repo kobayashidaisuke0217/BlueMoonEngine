@@ -168,6 +168,9 @@
     <ClCompile Include="Engine\base\SrvDescriptorHeap.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\base\CopyRender.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -275,6 +278,9 @@
     <ClInclude Include="Engine\base\SrvDescriptorHeap.h">
       <Filter>ヘッダー ファイル\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\base\CopyRender.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -300,6 +306,15 @@
     <FxCompile Include="Resource\hlsl\particle.PS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Resource\hlsl\CopyImage.VS.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resource\hlsl\PixelShader.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resource\hlsl\CopyImage.PS.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\hlsl\Object3D.hlsli">
@@ -309,6 +324,9 @@
       <Filter>リソース ファイル</Filter>
     </None>
     <None Include="Resource\hlsl\Particle.hlsli">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="Resource\hlsl\CopyImage.hlsli">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>
