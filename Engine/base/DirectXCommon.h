@@ -93,9 +93,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource>  depthStencilResource;
 
 	std::chrono::steady_clock::time_point reference_;
-private:
 
 	
+private:
+
+#pragma region Init
 	void InitializeDXGIDevice();
 	void CreateSwapChain();
 	void InitializeCommand();
@@ -106,7 +108,7 @@ private:
 	void CreateDepthStensil();
 	void CreateDebug();
 	void InitializeFixFPS();
-
+#pragma endregion
 	void updateFixFPS();
 };
 
