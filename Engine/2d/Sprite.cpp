@@ -242,13 +242,13 @@ void Sprite::Draw() {
 	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 	DirectXCommon::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_->GetGPUVirtualAddress());
 
-	//SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である
+	//SRVのDescriptorTableの先頭を設定。
 	if (textureHandle_ != 0) {
 		TextureManager::GraphicsCommand(textureHandle_);
 
 	}
 
-	//描画(DrawCall)6個のインデックスを使用し1つのインスタンスを描画。
+	//描画(DrawCall)
 	DirectXCommon::GetInstance()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 
 
