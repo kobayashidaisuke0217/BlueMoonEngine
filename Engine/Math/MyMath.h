@@ -36,7 +36,7 @@ struct Transform
 };
 struct VertexData {
 	Vector4 position;
-	Vector2 texcoord;
+	Vector2 texCoord;
 	Vector3 normal;
 };
 struct Material {
@@ -83,6 +83,10 @@ struct ModelData {
 	std::vector<VertexData> vertices;
 	MaterialData material;
 	Node rootNode;
+};
+struct TransformationMatrix {
+	Matrix4x4 WVP;
+	Matrix4x4 World;
 };
 struct AABB {
 	Vector3 min;

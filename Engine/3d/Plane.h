@@ -18,7 +18,7 @@ private:
 	void TransformMatrix();
 
 private:
-	Texturemanager* textureManager_;
+	TextureManager* textureManager_;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	DirectXCommon* direct_;

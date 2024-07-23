@@ -1,53 +1,73 @@
 #include "ImGuiManger.h"
+#include "WinApp.h"
+#include "DirectXCommon.h"
+#include "../base/SrvDescriptorHeap.h"
 
-ImGuiManger* ImGuiManger::GetInstance()
+ImGuiManager::ImGuiManager()
 {
-	static ImGuiManger instance;
+
+
+}
+
+ImGuiManager* ImGuiManager::GetInstance()
+{
+	static ImGuiManager instance;
+
 	return &instance;
 }
 
-void ImGuiManger::Initialize(WinApp* winApp, DirectXCommon* dxCommon)
+void ImGuiManager::Initialize()
 {
-	dxCommon_ = dxCommon;
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(winApp->GetHwnd());
-	ImGui_ImplDX12_Init(dxCommon_->GetDevice().Get(),
-		dxCommon_->GetbackBufferCount(),
-		dxCommon_->getRtvDesc().Format,
-		dxCommon_->GetSrvHeap().Get(),
-		dxCommon_->GetSrvHeap()->GetCPUDescriptorHandleForHeapStart(),
-		dxCommon_->GetSrvHeap()->GetGPUDescriptorHandleForHeapStart());
+	ImGui_ImplWin32_Init(WinApp::GetInstance()->GetHwnd());
+	ImGui_ImplDX12_Init(
+		DirectXCommon::GetInstance()->GetDevice().Get(),
+		DirectXCommon::GetInstance()->GetswapChain().swapChainDesc.BufferCount,
+		DirectXCommon::GetInstance()->GetRtvDesc().Format,
+		SrvManager::GetInstance()->GetSrvDescriptorHeap().Get(),
+		SrvManager::GetInstance()->GetSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
+		SrvManager::GetInstance()->GetSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 }
 
-void ImGuiManger::Finalize()
-{
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
-
-}
-
-void ImGuiManger::Begin()
+void ImGuiManager::BeginFrame()
 {
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ID3D12DescriptorHeap* descriptorHeaps[] = { dxCommon_->GetSrvHeap().Get() };
-	dxCommon_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 }
 
-void ImGuiManger::End()
+void ImGuiManager::Update()
+{
+
+}
+
+void ImGuiManager::PreDraw()
 {
 	ImGui::Render();
-
 }
 
-void ImGuiManger::Draw()
+void ImGuiManager::Draw()
 {
+	ID3D12DescriptorHeap* descriptorHeaps[] = { SrvManager::GetInstance()->GetSrvDescriptorHeap().Get() };
+	DirectXCommon::GetInstance()->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
+}
 
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxCommon_->GetCommandList().Get());
+void ImGuiManager::EndFrame()
+{
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), DirectXCommon::GetInstance()->GetCommandList().Get());
+}
+
+void ImGuiManager::Release()
+{
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
+ImGuiManager::~ImGuiManager()
+{
 
 }

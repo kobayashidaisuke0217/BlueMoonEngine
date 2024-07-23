@@ -1,155 +1,47 @@
 #pragma once
 
-
+#include "../../game/Manager/GameManager.h"
+#include "WinApp.h"
 #include "DirectXCommon.h"
 
-#include"MyMath.h"
-#pragma region standardInclude
-#include <dxcapi.h>
-#include<vector>
-#pragma comment(lib,"dxcompiler.lib")
-#pragma endregion
-enum BlendMode {
-	//通常のαブレンド
-	kBlendModeNormal,
-	//加算ブレンド
-	kBlendModeAdd,
-	//減産ブレンド
-	kBlendModeSubtract,
-	//乗算ブレンド
-	kBlendModeMultiply,
-	//スクリーンブレンド
-	kBlendModeScreen,
-};
-class BlueMoon
+class BlueMoon final
 {
-public:
-
-	static BlueMoon* GetInstance();
-
-	void variableInitialize();
-	void Initialize(int32_t width, int32_t height);
-	void BeginFrame();
-	void EndFrame();
-	void Finalize();
-	/*void Update();
-	void Draw();*/
-	~BlueMoon();
-
-	DirectXCommon* GetDirectXCommon() { return direct_; }
-
-
-	void ModelPreDraw();
-	void ModelPreDrawWireFrame();
-	void PariclePreDraw();
-	void SpritePreDraw();
-	void OutLinePreDraw();
-	void SetBlendMode(int BlendModeNum);
 private:
 
+	//コンストラクタ
+	BlueMoon() = default;
 
-	WinApp* win_;
-	DirectXCommon* direct_;
+	//デストラクタ
+	~BlueMoon();
 
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	D3D12_DEPTH_STENCIL_DESC depthStencilDescParticle{};
+public:
 
+	//インスタンス
+	static BlueMoon* GetInstance();
 
+	BlueMoon(const BlueMoon& bluemoon) = delete;
 
-	IDxcUtils* dxcUtils_;
-	IDxcCompiler3* dxcCompiler_;
-	IDxcIncludeHandler* includeHandler_;
+	BlueMoon& operator=(const BlueMoon& blueMoon) = delete;
 
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
-	D3D12_BLEND_DESC blendDesc_[5]{};
-	//3Dパイプライン
-	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlob3D_;
-	Microsoft::WRL::ComPtr<ID3DBlob>errorBlob3D_;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignature3D_;
-	IDxcBlob* vertexShaderBlob3D_;
-	IDxcBlob* pixelShaderBlob3D_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState3D_;
-	//3Dパイプラインワイヤーフレーム
-	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState3DWireFrame_;
-	//2Dパイプライン
-	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlob2D_;
-	Microsoft::WRL::ComPtr<ID3DBlob>errorBlob2D_;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignature2D_;
-	IDxcBlob* vertexShaderBlob2D_;
-	IDxcBlob* pixelShaderBlob2D_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineState2D_[5];
-D3D12_RASTERIZER_DESC rasterizerDesc2D_{};
-D3D12_INPUT_ELEMENT_DESC inputElementDescs2D_[2];
-D3D12_INPUT_LAYOUT_DESC inputLayoutDesc2D_{};
-D3D12_RASTERIZER_DESC rasterizerDesc3D_{};
-D3D12_RASTERIZER_DESC rasterizerDesc3DWireFrame_{};
-	D3D12_VIEWPORT viewport_{};
-	D3D12_RECT scissorRect_{};
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs3D_[3];
+public:
 
-	//Particle用のパイプライン
-	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlobParticle_;
-	Microsoft::WRL::ComPtr<ID3DBlob>errorBlobParticle_;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignatureParticle_;
-	IDxcBlob* vertexShaderBlobParticle_;
-	IDxcBlob* pixelShaderBlobParticle_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineStateParticle_;
-	D3D12_RASTERIZER_DESC rasterizerDescParticle_{};
-	D3D12_INPUT_ELEMENT_DESC inputElementDescsParticle_[3];
-	//アウトライン用のパイプライン
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDescOutLine_{};
-	Microsoft::WRL::ComPtr<ID3DBlob>signatureBlobOutLine_;
-	Microsoft::WRL::ComPtr<ID3DBlob>errorBlobOutLine_;
-	Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignatureOutLine_;
-	IDxcBlob* vertexShaderBlobOutLine_;
-	IDxcBlob* pixelShaderBlobOutLine_;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState>graphicsPipelineStateOutLine_;
-	D3D12_RASTERIZER_DESC rasterizerDescOutLine_{};
-	D3D12_INPUT_ELEMENT_DESC inputElementDescsOutLine_[3];
+	void Run();
 
+private:
 
-	//頂点リソースにデータを書き込む
-	Vector4* vertexData_;
-	int PSO2DCount_;
+	void Initialize();
 
+	void BeginFrame();
 
-	IDxcBlob* CompileShader(
-		//CompileShaderするShaderファイルへのパス
-		const std::wstring& filePath,
-		//Compielerに使用するProfile
-		const wchar_t* profile,
-		//初期化で生成したものを3つ
-		IDxcUtils* dxcUtils,
-		IDxcCompiler3* dxcCompiler,
-		IDxcIncludeHandler* includeHandler
-	);
-	void InitializeDxcCompiler();
-	void CreateRootSignature3D();
-	void CreateInputlayOut();
-	void SettingBlendState();
-	void SettingRasterizerState3D();
-	void InitializePSO3D();
-	void InitializePSO3DWireFrame();
-	void SettingViePort();
-	void SettingScissor();
-	void SettingDepth();
+	void Update();
 
-	void CreateRootSignature2D();
-	void SettingRasterizerState2D();
-	void InitializePSO2D();
-	void CreateInputlayOut2D();
+	void Draw();
 
-	void CreateRootSignatureParticle();
-	void SettingRasterizerStateParticle();
-	void InitializePSOParticle();
-	void CreateInputlayOutParticle();
+	void EndFrame();
 
+	void Release();
 
-	void CreateRootSignatureOutLine();
-	void SettingRasterizerStateOutLine();
-	void InitializePSOOutLine();
-	void CreateInputlayOutOutLine();
+private:
+
+	GameManager* gameManager_ = nullptr;
 };
-
-
-

@@ -1,17 +1,38 @@
 #pragma once
-#include "DirectXCommon.h"
-class ImGuiManger
-{
-public:
-	static ImGuiManger* GetInstance();
-	void Initialize(WinApp* winApp, DirectXCommon* dxCommon);
-	void Finalize();
-	void Begin();
-	void End();
-	void Draw();
-	
-private:
-	DirectXCommon* dxCommon_;
-	
-};
 
+class ImGuiManager final
+{
+private:
+
+	ImGuiManager();
+
+	~ImGuiManager();
+
+public:
+
+	ImGuiManager(const ImGuiManager& imGui) = delete;
+
+	ImGuiManager& operator=(const ImGuiManager& imGui) = delete;
+
+	static ImGuiManager* GetInstance();
+
+public:
+
+	void Initialize();
+
+	void BeginFrame();
+
+	void Update();
+
+
+	void PreDraw();
+
+	void Draw();
+
+	void EndFrame();
+
+	void Release();
+
+private:
+
+};
